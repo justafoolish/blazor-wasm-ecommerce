@@ -1,0 +1,80 @@
+@page "/signup"
+@inject IUserRegisterVM _registerVM
+@inject AuthenticationStateProvider authState
+@inject NavigationManager _navManage
+
+<hr class="offset-lg hidden-xs">
+<hr class="offset-md">
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 md-padding">
+      <h1 class="align-center text-6xl mt-4 mb-2">New Customer</h1>
+      <br>
+
+      <form class="join" @onsubmit="register">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <input type="text" name="name" @bind-value="_registerVM.user.Fullname" placeholder="First Name" class="form-control" /><br>
+            </div>
+            <div class="col-sm-12">
+              <input type="email" name="email" @bind-value="_registerVM.user.Email" placeholder="E-mail" class="form-control" /><br>
+            </div>
+            <div class="col-sm-12">
+              <input type="text" name="phone" @bind-value="_registerVM.user.Phone" placeholder="Phone" class="form-control" /><br>
+            </div>
+            <div class="col-sm-12">
+              <input type="text" name="address" @bind-value="_registerVM.user.Address" placeholder="Address" class="form-control" /><br>
+            </div>
+            <div class="col-sm-12">
+              <input type="password" name="password" @bind-value="_registerVM.user.Password" placeholder="Password" class="form-control" /><br>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-info w-full flex items-center justify-center" @onclick="register" disabled=@(isLoading)>
+
+          @if (isLoading)
+          {
+            <svg class="animate-spin h-6 w-6 mx-2 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-50" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          }
+          else
+          {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mx-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" />
+            </svg>
+          }
+          Signup </button>
+      </form>
+
+      <br class="hidden-sm hidden-md hidden-lg">
+    </div>
+  </div>
+</div>
+
+<br class="hidden-xs">
+<br class="hidden-xs">
+
+@code {
+  private bool isLoading { get; set; } = false;
+  protected async override Task OnInitializedAsync() {
+        var UserState = await authState.GetAuthenticationStateAsync();
+        var user = UserState.User;
+        if(user.Identity.IsAuthenticated) {
+            _navManage.NavigateTo("/home");
+        }
+    }
+  private async Task register()
+  {
+    isLoading = true;
+    bool isSuccess = await _registerVM.Register();
+    isLoading = false;
+
+    if(isSuccess)
+      _navManage.NavigateTo("login");
+
+  }
+}

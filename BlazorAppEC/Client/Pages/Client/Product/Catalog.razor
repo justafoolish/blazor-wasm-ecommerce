@@ -1,0 +1,146 @@
+@page "/category"
+@page "/category/{slug?}"
+@inject ICatalogVM _catalogVM
+
+@* Product listing *@
+<div class="container">
+    <div class="row">
+        <!-- Filter -->
+        <div class="col-sm-3 filter">
+            <div class="item">
+                <div class="title flex justify-between">
+                    <h1 class="h4">Type</h1>
+                    <button @onclick="_catalogVM.resetCat" data-action="clear"> <i class="ion-ios-trash-outline"></i> Clear</button>
+                    <a href="#clear" data-action="open" class="down"> <i class="ion-android-arrow-dropdown"></i> Open</a>
+                </div>
+
+                <div class="controls">
+                    <div class="checkbox-group" data-status=@(_catalogVM.selectedCategory == -1 ? "active" : "inactive")>
+                        <div class="checkbox"><i class="ion-android-done"></i></div>
+                        <label class="label" for="cat">All</label>
+                        <input id="cat" name="category" type="radio" value="-1" @onchange="catChange" checked=@(_catalogVM.selectedCategory == -1) />
+                    </div>
+                    @foreach (var item in _catalogVM.Categories)
+                    {
+                        <div class="checkbox-group" data-status=@(_catalogVM.selectedCategory == item.CategoryId ? "active" : "inactive")>
+                            <div class="checkbox"><i class="ion-android-done"></i></div>
+                            <label class="label" for=@($"cat{item.CategoryId}")>@item.Title</label>
+                            <input id=@($"cat{item.CategoryId}") name="category" type="radio" value="@item.CategoryId" @onchange="catChange" checked=@(_catalogVM.selectedCategory == item.CategoryId || slug == item.Title.ToLower()) />
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <br>
+
+            <div class="item">
+                <div class="title flex justify-between">
+                    <h1 class="h4">Manufacturer</h1>
+                    <button @onclick="_catalogVM.resetMan" data-action="clear"> <i class="ion-ios-trash-outline"></i> Clear</button>
+                </div>
+
+                <div class="controls block">
+                    <div class="checkbox-group" data-status=@(_catalogVM.selectedManufacture == -1 ? "active" : "inactive")>
+                        <div class="checkbox"><i class="ion-android-done"></i></div>
+                        <label class="label" for="man">All</label>
+                        <input id="man" name="man" type="radio" value="-1" @onchange="manChange" checked=@(_catalogVM.selectedManufacture == -1) />
+                    </div>
+                    @foreach (var item in _catalogVM.Manufactures)
+                    {
+                        <div class="checkbox-group" data-status=@(_catalogVM.selectedManufacture == item.ManufactureId ? "active" : "inactive")>
+                            <div class="checkbox"><i class="ion-android-done"></i></div>
+                            <label class="label" for=@($"man{item.ManufactureId}")>@item.Title</label>
+                            <input id=@($"man{item.ManufactureId}") name="man" type="radio" value="@item.ManufactureId" @onchange="manChange" checked=@(_catalogVM.selectedManufacture == item.ManufactureId || slug == item.Title.ToLower()) />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- /// -->
+
+        <!-- Products -->
+        
+        <div class="col-sm-9 products">
+        @if (isLoading)
+        {
+            <div class="row my-10 py-10">
+                <Loading width="w-10" height="h-10" custom="col-12"/>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+            @foreach (var item in _catalogVM.Products)
+            {
+                <div class="col-sm-6 col-md-4 product flex flex-col">
+                    <ProductItem product="item" />
+                </div>
+            }
+            </div>
+            @if (_catalogVM.totalPage > 1)
+            {
+                <nav>
+                    <ul class="pagination items-center justify-center space-x-2">
+                        <li class="cursor-pointer" @onclick=@(e => changePage(_catalogVM.currentPage > 1 ? _catalogVM.currentPage-1 : 1))>
+                            <a aria-label="Previous">
+                                <span aria-hidden="true"><i class="ion-ios-arrow-left"></i></span>
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= _catalogVM.totalPage; i++)
+                        {
+                            var btn = i;
+                            <li data="@i" @onclick=@(() => changePage(btn)) class=@(_catalogVM.currentPage == btn ? "active cursor-pointer" : "cursor-pointer")><a>@i</a></li>
+                        }
+                        <li class="cursor-pointer" @onclick=@(e => changePage(_catalogVM.currentPage < _catalogVM.totalPage ? _catalogVM.currentPage+1 : _catalogVM.totalPage))>
+                            <a aria-label="Next">
+                                <span aria-hidden="true"><i class="ion-ios-arrow-right"></i></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string slug {get; set;}
+    private bool isLoading { get; set; } = false;
+    protected async override Task OnInitializedAsync()
+    {
+        isLoading = true;
+        await _catalogVM.initCategories();
+        await _catalogVM.initManufactures();
+        await _catalogVM.GetProducts();
+        isLoading = false;
+    }
+    public async void catChange(ChangeEventArgs e)
+    {
+        isLoading = true;
+        _catalogVM.selectedCategory = Int32.Parse(e.Value.ToString());
+        _catalogVM.currentPage = 1;
+        await _catalogVM.GetProducts();
+        isLoading = false;
+        StateHasChanged();
+    }
+    public async void manChange(ChangeEventArgs e)
+    {
+        isLoading = true;
+        _catalogVM.selectedManufacture = Int32.Parse(e.Value.ToString());
+        _catalogVM.currentPage = 1;
+        await _catalogVM.GetProducts();
+        isLoading = false;
+        StateHasChanged();
+    }
+    public async void changePage(int page)
+    {
+        if (_catalogVM.currentPage != page)
+        {
+            _catalogVM.currentPage = page;
+            await _catalogVM.GetProducts();
+            StateHasChanged();
+        }
+    }
+}

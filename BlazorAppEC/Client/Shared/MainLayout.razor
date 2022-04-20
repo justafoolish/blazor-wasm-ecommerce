@@ -1,0 +1,48 @@
+﻿@inherits LayoutComponentBase
+
+<BlazoredToasts Timeout="3"
+                ShowProgressBar="true"/>
+
+@if (route.ToLower() == "admin")
+{
+    <AuthorizeView Roles="admin">
+        <Authorized>
+            <div class="relative min-h-screen flex">
+                <div class="w-64 bg-gray-700 text-white">
+                    <a href="/" class="block p-5 sticky top-0">
+                        Logo
+                    </a>
+                    <AdminNavMenu />
+                </div>
+                <div class="flex-1 mb-10">
+                    @Body
+                </div>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <BlazorAppEC.Client.Pages.Admin.Account.AdminLogin />
+        </NotAuthorized>
+    </AuthorizeView>
+}
+else
+{
+    <SideCart />
+    <ClientNavBar />
+    @Body
+    <ClientFooter />
+}
+
+@code {
+    private string route;
+    [Inject] public NavigationManager NavigationManager { get; set; }
+    [Inject] public IJSRuntime jSRuntime { get; set; }
+    protected override async void OnInitialized()
+    {
+        route = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split("/")[0];
+        if (route.ToLower() != "admin")
+        {
+            await jSRuntime.InvokeAsync<object>("includeClientStyle");
+        }
+    }
+
+}

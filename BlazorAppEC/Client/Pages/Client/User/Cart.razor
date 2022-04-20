@@ -1,0 +1,110 @@
+@page "/cart"
+@inject ILocalStorageService _localStorage
+@inject ICartService _cartService
+@inject NavigationManager _navigate
+@inject IToastService _toastService
+
+<hr class="offset-md">
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="checkout-cart">
+                        <div class="content">
+                            @if (_cartService.Carts.Count > 0)
+                            {
+                                @foreach (var item in _cartService.Carts)
+                                {
+                                    <CartItem product="item" deleteItem="() => deleteCartItem(item)" increase="() => increaseQty(item)" decrease="() => decreaseQty(item)"/>
+                                }
+                            } else {
+                                <NavLink href="/category" class="cursor-pointer">Continue Shopping</NavLink>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 col-md-4">
+            <hr class="offset-md visible-sm">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h2 class="no-margin">Summary</h2>
+                    <hr class="offset-md">
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <p>Subtotal (@_cartService.GetTotalItems() items)</p>
+                            </div>
+                            <div class="col-xs-6">
+                                <p><b>$@_cartService.GetPrice()</b></p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h3 class="no-margin">Total sum</h3>
+                            </div>
+                            <div class="col-xs-6">
+                                <h3 class="no-margin">$@_cartService.GetPrice()</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="offset-md">
+
+                    <a @onclick="checkout" class="btn btn-primary btn-lg justify"><i class="ion-android-checkbox-outline"></i>&nbsp;&nbsp; Checkout order</a>
+                    <hr class="offset-md">
+
+                    <p>Pay your order in the most convenient way</p>
+                    <div class="payment-icons">
+                        <img src="img/payments/icon-paypal.svg" alt="paypal">
+                        <img src="img/payments/icon-visa.svg" alt="visa">
+                        <img src="img/payments/icon-mc.svg" alt="mc">
+                        <img src="img/payments/icon-discover.svg" alt="discover">
+                        <img src="img/payments/icon-ae.svg" alt="ae">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="offset-lg">
+<hr class="offset-lg">
+
+@code {
+    [CascadingParameter] Task<AuthenticationState> _authState {get; set;}
+    public List<Product> cartItems { get; set; }
+    protected override void OnInitialized()
+    {
+        cartItems = _cartService.Carts;
+    }
+    protected void deleteCartItem(Product item) {
+        _cartService.DeleteItem(item);
+        StateHasChanged();
+    }
+    protected void increaseQty(Product item) {
+        _cartService.IncreaseQuantity(item);
+        StateHasChanged();
+    }
+    protected void decreaseQty(Product item) {
+        _cartService.DecreaseQuantity(item);
+        StateHasChanged();
+    }
+
+    protected async Task checkout() {
+        var userstate = await _authState;
+        var user = userstate.User;
+        if(!user.Identity.IsAuthenticated) {
+            _toastService.ShowInfo("","Please login");
+        } else if(_cartService.Carts.Count == 0) {
+            _toastService.ShowInfo("","Please order");
+        } else {
+            _navigate.NavigateTo("/checkout");
+        }
+    }
+}

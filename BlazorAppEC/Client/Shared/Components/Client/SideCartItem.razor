@@ -1,0 +1,35 @@
+<div class="media">
+    <div class="media-left">
+        <a href="#">
+            <img class="media-object" src="img/products/chrome-book-11.jpg" alt="HP Chromebook 11" />
+        </a>
+    </div>
+    <div class="media-body">
+        <h2 class="h4 media-heading">HP Chromebook 11</h2>
+        <label>Laptops</label>
+        <p class="price">$199.99</p>
+    </div>
+    <div class="controls">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" @onclick="@decreaseQty"><i class="ion-minus-round"></i></button>
+            </span>
+            <input type="text" class="form-control input-sm" placeholder="Qty" value="@quantity" readonly="">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" @onclick="@increaseQty"><i class="ion-plus-round"></i></button>
+            </span>
+        </div><!-- /input-group -->
+
+        <a href="#remove"> <i class="ion-trash-b"></i> Remove </a>
+    </div>
+</div>
+
+@code {
+    private int quantity = 1;
+    private void increaseQty() {
+        quantity++;
+    }
+    private void decreaseQty() {
+        quantity = quantity > 1 ? quantity - 1 : quantity;
+    }
+}

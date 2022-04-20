@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  mssql:
+    image: liaisonintl/mssql-server-linux
+    container_name: mssqlserver
+    ports:
+      - 1433:1433
+    volumes:
+      - ./SQL:/var/opt/mssql/data
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Tuan2903
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US:en
+      - LC_ALL=en_US.UTF-8
+      - TZ=America/New_York
+  # blazorappec.server:
+  #   container_name: blazor_app
+  #   build:
+  #     context: .
+  #     dockerfile: BlazorAppEC/Server/Dockerfile
+  #   ports:
+  #       - 8180:80
+  #       - 4334:443

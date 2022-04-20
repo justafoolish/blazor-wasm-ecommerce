@@ -1,0 +1,30 @@
+@page "/admin/category-manage/add"
+@inject NavigationManager _navigation
+@inject ICategoryAddVM _categoryAdd
+
+<header class='flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3'>
+    <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/category-manage">Huỷ</a>
+    <button class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" @onclick="Create">Lưu</button>
+</header>
+<main class="px-10 mt-5">
+    <h3 class="font-semibold text-2xl border-b pb-2">Tạo danh mục</h3>
+    <div class="grid grid-cols-6 mt-2 gap-4">
+        <div class="col-start-2 col-span-4 space-y-3">
+            <div>
+                <label>Tên danh mục</label>
+                <input @bind-value="_categoryAdd.Category.Title" type="text" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" placeholder="Nhập tên danh mục">
+            </div>
+        </div>
+    </div>
+</main>
+
+@code {
+    public async Task Create()
+    {
+        var res = await _categoryAdd.CreateCategory();
+        if (res.StatusCode.ToString().Equals("200"))
+        {
+            _navigation.NavigateTo("admin/category-manage");
+        }
+    }
+}

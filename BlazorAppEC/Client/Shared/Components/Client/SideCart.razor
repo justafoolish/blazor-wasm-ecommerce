@@ -1,0 +1,54 @@
+<div class="cart block" data-toggle="@(active ? "active" : "inactive")">
+    <div class="label" @onclick="openCart">
+        <i class="ion-bag"></i> 7
+    </div>
+
+    <div class="overlay" @onclick="closeCart"></div>
+
+    <div class="window">
+        <div class="title">
+            <button type="button" class="close" @onclick="closeCart"><i class="ion-android-close"></i></button>
+            <h1 class="h3 info">Shopping cart</h1>
+        </div>
+
+        <div class="content">
+            @for (int i = 0; i < 10; i++)
+            {
+                <BlazorAppEC.Client.Shared.Components.Client.SideCartItem />
+            }
+        </div>
+
+        <div class="checkout container-fluid">
+            <div class="row">
+                <div class="col-xs-3 col-sm-2">
+                    <div>
+                        <p>Subtotal:</p>
+                        <h3 class="h4">Total:</h3>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-4">
+                    <div class="total">
+                        <p>$1 200</p>
+                        <h3 class="h4">$1 200</h3>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-sm-6">
+                    <NavLink class="btn btn-primary" href="checkout" @onclick="closeCart"> Checkout order </NavLink>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private bool active = false;
+
+    public void openCart() {
+        active = true;
+    }
+    public void closeCart() {
+        active = false;
+    }
+}

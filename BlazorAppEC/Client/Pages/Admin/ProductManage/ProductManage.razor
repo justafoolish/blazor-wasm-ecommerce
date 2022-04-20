@@ -1,0 +1,77 @@
+@page "/admin/product-manage"
+@inject IProductManageVM _productManageVM
+
+<BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
+<main class="px-10">
+    <div class="flex justify-between py-5 mb-3">
+        <h3 class="font-semibold text-2xl">Danh sách sản phẩm</h3>
+        <div class="flex space-x-3">
+            <NavLink class="flex items-center bg-gray-700 text-gray-200 text-xs px-3 py-2 hover:text-gray-100 hover:bg-gray-900" href="admin/product-manage/add">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Tạo sản phẩm
+            </NavLink>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="product_table" class="table table-borderless table-hover" width="100%" cellspacing="0">
+            <thead class="bg-gray-700 text-gray-50">
+                <tr class="grid grid-cols-4">
+                    <th class="col-span-2">Tên Sản Phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá thành</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _productManageVM.Products)
+                {
+                    <tr class="grid grid-cols-4">
+                        <td class="text-left col-span-2 flex items-center space-x-4">
+                            <div class="w-10">
+                                <img src="@item.Image" class="max-w-full h-auto object-center object-cover">
+                            </div>
+                            <a href="" class="text-gray-700 hover:text-gray-900 hover:underline transition-all">
+                                @item.Name
+                            </a>
+                        </td>
+                        <td class="grid place-items-center">
+                            <span>
+                                @item.Quantity
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-green-500" id="current">
+                                @item.Price
+                            </span>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        <div class="col-sm-12 col-md-7 ml-auto mx-5">
+            <div class="dataTables_paginate paging_simple_numbers flex" id="product_table_paginate">
+                <ul class="pagination ml-auto">
+                    <li class="paginate_button page-item previous disabled" id="product_table_previous"><a href="#" aria-controls="product_table" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+                    <li class="paginate_button page-item active"><a href="#" aria-controls="product_table" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="3" tabindex="0" class="page-link">3</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="4" tabindex="0" class="page-link">4</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="5" tabindex="0" class="page-link">5</a></li>
+                    <li class="paginate_button page-item disabled" id="product_table_ellipsis"><a href="#" aria-controls="product_table" data-dt-idx="6" tabindex="0" class="page-link">…</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="7" tabindex="0" class="page-link">9</a></li>
+                    <li class="paginate_button page-item next" id="product_table_next"><a href="#" aria-controls="product_table" data-dt-idx="8" tabindex="0" class="page-link">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await _productManageVM.GetProducts();
+    }
+}

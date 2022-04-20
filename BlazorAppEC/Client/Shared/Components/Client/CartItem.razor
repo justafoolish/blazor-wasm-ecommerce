@@ -1,0 +1,32 @@
+<div class="media">
+    <div class="flex">
+    <div class="w-24 h-24 inline mr-4">
+        <img class="w-24 h-24 object-contain inline" src="@product.Image" alt="@product.Slug" />
+    </div>
+        <div>
+            <h2 class="h4 media-heading">@product.Name</h2>
+        <label></label>
+        <p class="price">@product.Price</p>
+        </div>
+    </div>
+    <div class="controls">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" @onclick="() => decrease?.Invoke()"><i class="ion-minus-round"></i></button>
+            </span>
+            <input type="text" class="form-control input-sm" @bind-value="@product.Quantity">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" @onclick="() => increase?.Invoke()"><i class="ion-plus-round"></i></button>
+            </span>
+        </div><!-- /input-group -->
+
+        <a @onclick="() => deleteItem?.Invoke()"> <i class="ion-trash-b"></i> Remove </a>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Product product { get; set; }
+    [Parameter] public Action deleteItem {get; set;}
+    [Parameter] public Action increase {get; set;}
+    [Parameter] public Action decrease {get; set;}
+}

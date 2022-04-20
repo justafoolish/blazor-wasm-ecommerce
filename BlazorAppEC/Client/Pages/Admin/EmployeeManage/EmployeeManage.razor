@@ -1,0 +1,49 @@
+@page "/admin/employee-manage"
+
+<BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
+<main class="px-10">
+    <div class="flex justify-between py-5 mb-3">
+        <h3 class="font-semibold text-2xl">Danh sách nhân viên</h3>
+        <div class="flex space-x-3">
+            <NavLink href="admin/employee-manage/add" class="flex items-center bg-gray-700 text-gray-200 text-xs px-3 py-2 hover:text-gray-100 hover:bg-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Tạo nhân viên
+            </NavLink>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="product_table" class="table table-borderless table-hover" width="100%" cellspacing="0">
+            <thead class="bg-gray-700 text-gray-50">
+                <tr>
+                    <th>Nhân Viên</th>
+                    <th>Chức vụ</th>
+                    <th>Email</th>
+                    <th>SDT</th>
+                    <th>Địa chỉ</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td class="text-left flex items-center">
+                        Tuns
+                    </td>
+                    <td class="text-center">
+                        Admin
+                    </td>
+                    <td class="">
+                        hactun@tu.com
+                    </td>
+                    <td class="text-center">
+                        0123456123
+                    </td>
+                    <td class="text-center">
+                        VN
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
