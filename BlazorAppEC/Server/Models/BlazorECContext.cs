@@ -23,15 +23,18 @@ namespace BlazorAppEC.Server.Models
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ReceivedNote> ReceivedNotes { get; set; }
+        public virtual DbSet<ReceivedNoteDetail> ReceivedNoteDetails { get; set; }
+        public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-//             if (!optionsBuilder.IsConfigured)
-//             {
+            if (!optionsBuilder.IsConfigured)
+            {
 // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                 optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=BlazorEC;User ID=SA;Password=Tuan2903");
-//             }
+                // optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=BlazorEC;User ID=SA;Password=Tuan2903");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,12 +44,6 @@ namespace BlazorAppEC.Server.Models
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.Slug).HasDefaultValueSql("('NULL')");
-            });
-
-            modelBuilder.Entity<Manufacture>(entity =>
-            {
-                entity.HasKey(e => e.ManufactureId)
-                    .HasName("PK__manufact__142795FEFB6DB61C");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -88,6 +85,18 @@ namespace BlazorAppEC.Server.Models
                 entity.Property(e => e.Price).HasDefaultValueSql("('NULL')");
 
                 entity.Property(e => e.Sold).HasDefaultValueSql("('0')");
+            });
+
+            modelBuilder.Entity<ReceivedNote>(entity =>
+            {
+                entity.HasKey(e => e.ReceiveNoteId)
+                    .HasName("PK__received__5F76C5E57F6AE548");
+            });
+
+            modelBuilder.Entity<ReceivedNoteDetail>(entity =>
+            {
+                entity.HasKey(e => new { e.ReceivedNoteId, e.ProductId })
+                    .HasName("PK__received__F8801DB6737CB634");
             });
 
             OnModelCreatingPartial(modelBuilder);

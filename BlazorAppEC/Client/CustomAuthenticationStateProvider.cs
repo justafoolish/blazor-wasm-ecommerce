@@ -68,10 +68,11 @@ namespace BlazorAppEC.Client
             var claimName = new Claim(ClaimTypes.Name, currentUser.Fullname);
             var claimEmail = new Claim(ClaimTypes.Email, currentUser.Email);
             var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, currentUser.UserId.ToString());
+            var claimAddress = new Claim(ClaimTypes.StreetAddress, currentUser.Address);
             var claimRole = new Claim(ClaimTypes.Role, currentUser.Role == null ? "" : currentUser.Role);
 
             //create claimsIdentity
-            var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimName, claimRole }, "serverAuth");
+            var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimName, claimAddress ,claimRole }, "serverAuth");
             //create claimsPrincipal
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 

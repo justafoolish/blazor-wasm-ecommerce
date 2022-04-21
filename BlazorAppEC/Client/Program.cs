@@ -13,6 +13,7 @@ using Blazored.LocalStorage;
 using Blazored.Toast;
 using BlazorAppEC.Shared.Services;
 
+
 namespace BlazorAppEC.Client
 {
     public class Program
@@ -21,6 +22,7 @@ namespace BlazorAppEC.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
+
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
@@ -36,6 +38,7 @@ namespace BlazorAppEC.Client
             builder.Services.AddSingleton<IHomePageVM, HomePageVM>();
             builder.Services.AddHttpClient<ICatalogVM, CatalogVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddHttpClient<ICheckoutVM, CheckoutVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             //admin
             builder.Services.AddSingleton<IProductManageVM, ProductManageVM>();

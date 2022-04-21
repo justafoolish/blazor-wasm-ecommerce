@@ -1,11 +1,15 @@
-﻿<CascadingAuthenticationState>
+﻿@inject NavigationManager _navigate
+
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
+                @if(true) {
+                    _navigate.NavigateTo("/home");
+                }
             </LayoutView>
         </NotFound>
     </Router>

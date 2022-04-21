@@ -1,8 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Web.Extensions.Head
 
-<BlazoredToasts Timeout="3"
-                ShowProgressBar="true"/>
-
+<BlazoredToasts Timeout="3"/>
 @if (route.ToLower() == "admin")
 {
     <AuthorizeView Roles="admin">
@@ -26,6 +25,7 @@
 }
 else
 {
+    <Link rel="stylesheet" href="css/client.css" />
     <SideCart />
     <ClientNavBar />
     @Body
@@ -35,14 +35,9 @@ else
 @code {
     private string route;
     [Inject] public NavigationManager NavigationManager { get; set; }
-    [Inject] public IJSRuntime jSRuntime { get; set; }
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
         route = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split("/")[0];
-        if (route.ToLower() != "admin")
-        {
-            await jSRuntime.InvokeAsync<object>("includeClientStyle");
-        }
     }
 
 }

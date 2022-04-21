@@ -12,6 +12,7 @@ namespace BlazorAppEC.Shared.Services {
         public void DeleteItem(Product item);
         public void IncreaseQuantity(Product item);
         public void DecreaseQuantity(Product item);
+        public void ClearCart();
         
     }
 }

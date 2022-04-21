@@ -11,7 +11,6 @@ erDiagram
               nvarchar address
               nvarchar phone
               nvarchar role
-
           }
           ORDER {
               int order_id
@@ -36,10 +35,12 @@ erDiagram
           CATEGORY {
               int category_id
               nvarchar title
+              nvarchar slug
           }
           MANUFACTURE {
               int manufacture_id
               nvarchar title
+              nvarchar slug
           }
           PRODUCT {
               int product_id
@@ -51,7 +52,22 @@ erDiagram
               nvarchar slug
               int category_id
               int manufacture_id
-
+          }
+          RECEIVED_NOTE {
+              int received_note_id
+              int user_id
+              smalldatetime create_at
+              smalldatetime update_at
+          }
+          RECEIVED_NOTE_DETAIL {
+              int received_note_id
+              int product_id
+              int quantity
+              int price
+          }
+          SUPPLIER {
+              int supplier_id
+              nvarchar name
           }
           USER ||--o{ ORDER : places
           DISCOUNT ||--o{ ORDER : has
@@ -59,6 +75,11 @@ erDiagram
           PRODUCT ||--o{ ORDER_DETAIL : "ordered in"
           CATEGORY ||--|{ PRODUCT : contains
           MANUFACTURE ||--|{ PRODUCT : contains
+          RECEIVED_NOTE }|--|| SUPPLIER : provides
+          RECEIVED_NOTE }|--|| USER: has
+          RECEIVED_NOTE ||--|{ RECEIVED_NOTE_DETAIL : contains
+          RECEIVED_NOTE_DETAIL ||--|{ PRODUCT : has
+
 ```
 
 ----

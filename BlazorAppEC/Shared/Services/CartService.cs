@@ -135,5 +135,11 @@ namespace BlazorAppEC.Shared.Services
 
             return total;
         }
+
+        public void ClearCart()
+        {
+            Carts.Clear();
+            _localStorage.SetItem<List<Product>>(CART, Carts);
+        }
     }
 }

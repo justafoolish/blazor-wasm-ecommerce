@@ -3,7 +3,9 @@
 * {
     box-sizing: border-box !important;
 }
-
+.blazored-toast-container.position-topright {
+    z-index: 1000000000 !important;
+}
 html,
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;

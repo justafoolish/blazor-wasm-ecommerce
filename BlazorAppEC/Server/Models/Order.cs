@@ -21,9 +21,9 @@ namespace BlazorAppEC.Server.Models
         [Column("discount_id")]
         public int? DiscountId { get; set; }
         [Column("status")]
-        public int Status { get; set; }
+        public int? Status { get; set; }
         [Column("create_at", TypeName = "smalldatetime")]
-        public DateTime CreateAt { get; set; }
+        public DateTime? CreateAt { get; set; }
         [Key]
         [Column("order_id")]
         public int OrderId { get; set; }

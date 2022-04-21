@@ -153,6 +153,7 @@ namespace BlazorAppEC.Server.Controllers
                 UserId = user.UserId,
                 Fullname = user.Fullname,
                 Email = user.Email,
+                Address = user.Address,
                 Role = user.Role,
             }).Where(user => user.UserId == userId).FirstOrDefaultAsync();
         }
@@ -165,10 +166,11 @@ namespace BlazorAppEC.Server.Controllers
             var claimEmail = new Claim(ClaimTypes.Email, user.Email);
             var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString());
             var claimName = new Claim(ClaimTypes.Name, user.Fullname);
+            var claimAddress = new Claim(ClaimTypes.StreetAddress, user.Address);
             var claimRole = new Claim(ClaimTypes.Role, user.Role == null ? "" : user.Role);
 
             //create claimsIdentity
-            var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimName, claimRole }, "serverAuth");
+            var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimName, claimAddress, claimRole }, "serverAuth");
 
             // generate token that is valid for 7 days
             var tokenDescriptor = new SecurityTokenDescriptor

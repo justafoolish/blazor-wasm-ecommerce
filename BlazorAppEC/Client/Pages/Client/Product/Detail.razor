@@ -1,5 +1,6 @@
 @page "/product/{slug?}"
 @inject IHomePageVM _homePageVM
+@inject ICartService _cartService
 
 <hr class="offset-lg">
 <div class="product">
@@ -28,7 +29,7 @@
         @* <p class="price through">$249.99</p> *@
         <br><br>
 
-        <button class="btn btn-primary btn-rounded"> <i class="ion-bag"></i> Add to cart</button>
+        <button class="btn btn-primary btn-rounded" @onclick=@(() => _cartService.AddToCart(_homePageVM.Product))> <i class="ion-bag"></i> Add to cart</button>
       </div>
     </div>
     <br><br><br>
