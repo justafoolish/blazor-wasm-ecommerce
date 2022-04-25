@@ -1,11 +1,12 @@
 @page "/admin/product-manage/add"
 @inject NavigationManager _navigation
 @inject IProductAddVM _productAddVM
+@inject IToastService _toastService
 
 <div>
     <header class='flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3'>
-        <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="">Huỷ</a>
-        <button @onclick="_productAddVM.AddProduct" class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50">Lưu</button>
+        <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/product-manage" disabled="@isLoading">Huỷ</a>
+        <button @onclick="submitForm" class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" disabled="@isLoading">Lưu</button>
     </header>
     <main class="px-10 mt-5">
         <h3 class="font-semibold text-2xl border-b pb-2">Tạo sản phẩm</h3>
@@ -68,6 +69,7 @@
 </div>
 
 @code {
+    private bool isLoading = false;
     protected async override Task OnInitializedAsync()
     {
         await _productAddVM.initCategories();
@@ -85,5 +87,18 @@
         _productAddVM.Product.Image = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
 
         System.Console.WriteLine(_productAddVM.Product.Image);
+    }
+
+    public async Task submitForm() {
+        isLoading = true;
+        bool response = await _productAddVM.AddProduct();
+        if(response) {
+            _toastService.ShowSuccess("","Thêm thành công");
+            await Task.Delay(3000);
+            _navigation.NavigateTo("admin/product-manage");
+        } else {
+            _toastService.ShowError("", "Thêm thất bại. Vui lòng thử lại");
+        }
+        isLoading = false;
     }
 }

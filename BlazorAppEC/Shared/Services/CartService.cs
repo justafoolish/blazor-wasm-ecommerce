@@ -13,6 +13,7 @@ namespace BlazorAppEC.Shared.Services
         const string CART = "cart";
         private readonly ISyncLocalStorageService _localStorage;
         private readonly IToastService _toastService;
+        public event Action OnChange;
         public CartService(ISyncLocalStorageService localStorage, IToastService toast)
         {
             _localStorage = localStorage;
@@ -43,6 +44,7 @@ namespace BlazorAppEC.Shared.Services
             }
             _localStorage.SetItem<List<Product>>(CART, Carts);
             _toastService.ShowSuccess(item.Name, "Added");
+            OnChange?.Invoke();
         }
 
         public void DeleteItem(Product item)
@@ -66,6 +68,7 @@ namespace BlazorAppEC.Shared.Services
             }
             _localStorage.SetItem<List<Product>>(CART, Carts);
             _toastService.ShowSuccess(item.Name, "Deleted");
+            OnChange?.Invoke();
         }
 
         public void IncreaseQuantity(Product item)
@@ -89,6 +92,7 @@ namespace BlazorAppEC.Shared.Services
                 }
             }
             _localStorage.SetItem<List<Product>>(CART, Carts);
+            OnChange?.Invoke();
         }
 
         public void DecreaseQuantity(Product item)
@@ -112,6 +116,7 @@ namespace BlazorAppEC.Shared.Services
                 }
             }
             _localStorage.SetItem<List<Product>>(CART, Carts);
+            OnChange?.Invoke();
         }
 
         public int GetTotalItems()
@@ -140,6 +145,7 @@ namespace BlazorAppEC.Shared.Services
         {
             Carts.Clear();
             _localStorage.SetItem<List<Product>>(CART, Carts);
+            OnChange?.Invoke();
         }
     }
 }

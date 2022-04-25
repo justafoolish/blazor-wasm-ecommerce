@@ -1,10 +1,11 @@
 @page "/admin/category-manage/add"
 @inject NavigationManager _navigation
 @inject ICategoryAddVM _categoryAdd
+@inject IToastService _toastService
 
 <header class='flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3'>
-    <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/category-manage">Huỷ</a>
-    <button class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" @onclick="Create">Lưu</button>
+    <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/category-manage" disabled="@isLoading">Huỷ</a>
+    <button class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" @onclick="Create" disabled="@isLoading">Lưu</button>
 </header>
 <main class="px-10 mt-5">
     <h3 class="font-semibold text-2xl border-b pb-2">Tạo danh mục</h3>
@@ -19,12 +20,19 @@
 </main>
 
 @code {
+    private bool isLoading = false;
     public async Task Create()
     {
-        var res = await _categoryAdd.CreateCategory();
-        if (res.StatusCode.ToString().Equals("200"))
-        {
+        isLoading = true;
+        bool response = await _categoryAdd.CreateCategory();
+        if(response) {
+            _toastService.ShowSuccess("","Thêm thành công");
+            await Task.Delay(3000);
+            isLoading = false;
             _navigation.NavigateTo("admin/category-manage");
+        } else {
+            _toastService.ShowError("", "Thêm thất bại. Vui lòng thử lại");
         }
+        isLoading = false;
     }
 }

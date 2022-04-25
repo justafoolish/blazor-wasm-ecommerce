@@ -1,6 +1,7 @@
 @using BlazorAppEC.Shared
 @inject ILocalStorageService _localStorage
 @inject IToastService _toastService
+@implements IDisposable
 
 @inject ICartService _cartService
 <NavLink href="@($"product/{product.Slug}")" class="h-full grow w-full flex">
@@ -8,7 +9,7 @@
 </NavLink>
 <div class="content mt-auto">
     <h1 class="h4">@product.Name</h1>
-    <p class="price">$@product.Price</p>
+    <p class="price">@(String.Format("{0:n0}", product.Price)) <sup>vnd</sup></p>
     <label></label>
 
     <NavLink href="@($"product/{product.Slug}")" class="btn btn-link"> Details</NavLink>
@@ -18,4 +19,12 @@
 
 @code {
     [Parameter] public Product product { get; set; }
+    protected override void OnInitialized()
+    {
+        _cartService.OnChange += StateHasChanged;
+    }
+    public void Dispose() {
+        _cartService.OnChange -= StateHasChanged;
+    }
+
 }

@@ -1,6 +1,7 @@
 @page "/admin/inventory"
+@inject IReceivedNoteVM _receivedNoteVM
 
-<BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
+<AdminNavBar />
 <main class="px-10">
     <div class="flex justify-between py-5 mb-3">
         <h3 class="font-semibold text-2xl">Tồn kho</h3>
@@ -25,24 +26,45 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="grid grid-cols-11 text-center">
-                    <td class="col-span-2">
-                        PM001
-                    </td>
-                    <td class="col-span-2">
-                        02/02/22
-                    </td>
-                    <td class="col-span-2">
-                        NCC
-                    </td>
-                    <td class="col-span-3">
-                        Tuns
-                    </td>
-                    <td class="col-span-2">
-                        123.123<sup>đ</sup>
-                    </td>
-                </tr>
+                @foreach (var item in _receivedNoteVM.ReceivedNotes)
+                {
+                    <tr class="grid grid-cols-11 text-center">
+                        <td class="col-span-2">
+                            @item.ReceiveNoteId
+                        </td>
+                        <td class="col-span-2">
+                            @item.CreateAt
+                        </td>
+                        <td class="col-span-2">
+                            @item.Supplier.Name
+                        </td>
+                        <td class="col-span-3">
+                            @item.User.Fullname
+                        </td>
+                        <td class="col-span-2">
+                            @(String.Format("{0:n0}", _receivedNoteVM.GetBillTotal(item.ReceivedNoteDetails.ToList()))) 
+                            <sup>đ</sup>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </main>
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await _receivedNoteVM.GetGoodReceivedNotes();
+    }
+    public async void changePage(int page)
+    {
+        if (_receivedNoteVM.currentPage != page)
+        {
+            _receivedNoteVM.currentPage = page;
+            await _receivedNoteVM.GetGoodReceivedNotes();
+            StateHasChanged();
+        }
+    }
+}

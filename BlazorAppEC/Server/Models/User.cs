@@ -14,6 +14,7 @@ namespace BlazorAppEC.Server.Models
         public User()
         {
             Orders = new HashSet<Order>();
+            ReceivedNotes = new HashSet<ReceivedNote>();
         }
 
         [Required]
@@ -45,5 +46,7 @@ namespace BlazorAppEC.Server.Models
 
         [InverseProperty(nameof(Order.User))]
         public virtual ICollection<Order> Orders { get; set; }
+        [InverseProperty(nameof(ReceivedNote.User))]
+        public virtual ICollection<ReceivedNote> ReceivedNotes { get; set; }
     }
 }

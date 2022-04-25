@@ -21,5 +21,12 @@ namespace BlazorAppEC.Server.Models
         public int Quantity { get; set; }
         [Column("price")]
         public int Price { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        [InverseProperty("ReceivedNoteDetails")]
+        public virtual Product Product { get; set; }
+        [ForeignKey(nameof(ReceivedNoteId))]
+        [InverseProperty("ReceivedNoteDetails")]
+        public virtual ReceivedNote ReceivedNote { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace BlazorAppEC.Client
             builder.Services.AddBlazoredToast();
             builder.Services.AddScoped<AuthenticationStateProvider, BlazorAppEC.Client.CustomAuthenticationStateProvider>();
 
-            
+        
             //client
             builder.Services.AddSingleton<ICategoryManageVM, CategoryManageVM>();
             builder.Services.AddSingleton<BlazorAppEC.Shared.IUserLoginVM, UserLoginVM>();
@@ -41,10 +41,14 @@ namespace BlazorAppEC.Client
             builder.Services.AddHttpClient<ICheckoutVM, CheckoutVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             //admin
-            builder.Services.AddSingleton<IProductManageVM, ProductManageVM>();
-            builder.Services.AddSingleton<IProductAddVM, ProductAddVM>();
-            builder.Services.AddSingleton<ICategoryAddVM, CategoryAddVM>();
+            builder.Services.AddHttpClient<IProductManageVM, ProductManageVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IProductAddVM, ProductAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<ICategoryAddVM, CategoryAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IAddReceivedNote, AddReceivedNoteVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IReceivedNoteVM, ReceivedNoteVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddSingleton<ICategoryManageVM, CategoryManageVM>();
+            builder.Services.AddHttpClient<IOrderDetailVM, OrderDetailVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IOrderVM, OrderVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             await builder.Build().RunAsync();
         }
     }

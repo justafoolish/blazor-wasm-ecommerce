@@ -1,25 +1,30 @@
 @page "/admin/inventory/add"
+@using System.Security.Claims
+@inject IAddReceivedNote _receivedNoteVM
+@inject IToastService _toastService
+@inject NavigationManager _navigate
 
-<form action="<?= BASE_URL ?>/ProductManage/CreateInventoryReceipt" method="post">
-    <header id="header" class="flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3 relative">
-        <NavLink class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/inventory">Huỷ</NavLink>
-        <button class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" type="submit" name="submit">Lưu</button>
+<header id="header" class="flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3">
+    <NavLink class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/inventory">Huỷ</NavLink>
+    <button class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" @onclick="CreateReceived" disabled="@isLoading">Lưu</button>
 
-    </header>
-    <main class="px-10 mt-5 relative">
-        <h3 class="font-semibold text-2xl border-b pb-2">Tạo phiếu nhập</h3>
+</header>
+<main class="px-10 mt-5 relative">
+    <h3 class="font-semibold text-2xl border-b pb-2">Tạo phiếu nhập</h3>
+    <form @onsubmit="_receivedNoteVM.AddReceivedNoteDetail">
         <div class="grid grid-cols-6 mt-2 gap-4 divide-gray-400 divide-x">
             <div class="col-span-4 space-y-3">
                 <div class="space-y-3">
                     <div>
                         <label>Chọn sản phẩm nhập</label>
-                        <select id="product-list" class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
+                        <select @onchange="onProductChange" class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
                             <option selected disabled>Chọn sản phẩm</option>
-                            <?php foreach ($products as $product) { ?>
-                            <option value="<?= $product['MaSP'] ?>" quantity="<?= $product['SoLuong'] ?>" size="<?= $product['MaSize'] ?>">
-                                <?= $product['TenSP'] . " - " . $product['MaSize'] ?>
-                            </option>
-                            <?php } ?>
+                            @foreach (var item in _receivedNoteVM.Products)
+                            {
+                                <option value="@item.ProductId">
+                                    @item.Name
+                                </option>
+                            }
                         </select>
                     </div>
                     <div class="grid grid-cols-3 gap-5">
@@ -27,22 +32,31 @@
                             <div>
                                 <label>Số lượng:
                                     <span class="inline-flex mt-auto items-end">
-                                        <span class="mr-1">(Tồn</span>
-                                        <span id="inv" class="text-yellow-500">0</span>
-                                        <span class="flex text-green-500" id="new"></span>)
+                                        <span class="mr-1">(Tồn </span>
+                                        <span id="inv" class="text-@(SelectedQuantity > 10 ? "green" :"yellow")-500">@(SelectedQuantity != -1 ? SelectedQuantity : 0)</span>
+                                        @if (_receivedNoteVM.ReceivedNoteItem.Quantity > 0)
+                                        {
+                                            <span class="flex text-green-500" id="new">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-2 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                                </svg>
+                                                @(_receivedNoteVM.ReceivedNoteItem.Quantity + SelectedQuantity)
+                                            </span>
+                                        }
+                                        )
                                     </span>
                                 </label>
-                                <input id="updateQuantity" type="number" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min=1>
+                                <input @bind-value="_receivedNoteVM.ReceivedNoteItem.Quantity" type="number" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min=1>
                             </div>
                         </div>
                         <div>
                             <div>
                                 <label>Đơn giá nhập:</label>
-                                <input id="price" type="number" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min=10000>
+                                <input @bind-value="_receivedNoteVM.ReceivedNoteItem.Price" type="number" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min=10000>
                             </div>
                         </div>
                     </div>
-                    <button class="text-xs mt-auto py-2 px-3 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50 flex items-center space-x-2" id="addProduct">
+                    <button type="submit" class="text-xs mt-auto py-2 px-3 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50 flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -50,43 +64,103 @@
                     </button>
                 </div>
             </div>
+
             <div class="col-span-2 space-y-3 pl-4">
                 <div>
                     <label>Nhân viên thực hiện</label>
-                    <input type="text" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" value="<?= $employee['TenNhanVien'] ?>" disabled>
+                    <input type="text" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" @bind-value="_receivedNoteVM.User.Fullname" disabled>
                 </div>
                 <div>
                     <label>Chọn nhà cung cấp</label>
-                    <select id="ncc" class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
+                    <select @onchange=@(e => _receivedNoteVM.ReceivedNote.SupplierId = Int32.Parse(e.Value.ToString())) class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
                         <option selected disabled value="">Chọn nhà cung cấp</option>
-                        <?php foreach ($sups as $sup) { ?>
-                        <option value="<?= $sup['MaNhaCungCap'] ?>">
-                            <?= $sup['TenNhaCungCap'] ?>
-                        </option>
-                        <?php } ?>
+                        @foreach (var item in _receivedNoteVM.Suppliers)
+                        {
+                            <option value="@item.SupplierId">
+                                @item.Name
+                            </option>
+                        }
                     </select>
                 </div>
                 <div>
                     <label>Ngày nhập</label>
-                    <input type="date" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" value="<?= date('Y-m-d') ?>" disabled>
+                    <input type="date" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" @bind-value="dateTime" disabled/>
                 </div>
             </div>
-        </div>
-        <div class="mt-5">
-            <table class="table table-borderless table-hover" width="100%" cellspacing="0">
-                <thead class="text-center bg-gray-200">
-                    <tr class="grid grid-cols-12">
-                        <td class="col-span-2">Mã sản phẩm</td>
-                        <td class="col-span-5">Tên sản phẩm</td>
-                        <td class="col-span-2">Số lượng</td>
-                        <td class="col-span-2">Đơn giá</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody id="table">
 
-                </tbody>
-            </table>
         </div>
-    </main>
-</form>
+    </form>
+    <div class="mt-5">
+        <table class="table table-borderless table-hover" width="100%" cellspacing="0">
+            <thead class="text-center bg-gray-200">
+                <tr class="grid grid-cols-12">
+                    <td class="col-span-2">Mã sản phẩm</td>
+                    <td class="col-span-5">Tên sản phẩm</td>
+                    <td class="col-span-2">Số lượng</td>
+                    <td class="col-span-2">Đơn giá</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _receivedNoteVM.ReceivedNote.ReceivedNoteDetails)
+                {
+                    <tr class="grid grid-cols-12">
+                        <td class="text-center col-span-2">@item.ProductId</td>
+                        <td class="col-span-5">@GetProductName(item.ProductId)</td>
+                        <td class="text-center col-span-2">@item.Quantity</td>
+                        <td class="text-center col-span-2">@item.Price</td>
+                        <td>
+                            <button id="remove" class="hover:text-red-500 transition-all removeItem" @onclick=@(_ => _receivedNoteVM.DeleteReceiveNoteItem(item.ProductId))>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</main>
+
+@code {
+    [CascadingParameter] Task<AuthenticationState> _authetication { get; set; }
+    protected bool isLoading = false;
+    protected DateTime dateTime = DateTime.Today;
+    protected int SelectedQuantity { get; set; } = -1;
+    protected async override Task OnInitializedAsync()
+    {
+        var currentState = await _authetication;
+        var user = currentState.User;
+        await _receivedNoteVM.LoadProducts();
+        await _receivedNoteVM.LoadSuppliers();
+        IEnumerable<Claim> _claim = Enumerable.Empty<Claim>();
+        _claim = user.Claims;
+        _receivedNoteVM.User.UserId = Convert.ToInt32(_claim.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+        _receivedNoteVM.User.Fullname = _claim.Where(c => c.Type == ClaimTypes.Name).FirstOrDefault().Value;
+        _receivedNoteVM.ReceivedNote.UserId = _receivedNoteVM.User.UserId;
+    }
+
+    protected void onProductChange(ChangeEventArgs e)
+    {
+        SelectedQuantity = _receivedNoteVM.Products.Where(p => p.ProductId == Int32.Parse(e.Value.ToString())).FirstOrDefault().Quantity;
+        _receivedNoteVM.ReceivedNoteItem.ProductId = Int32.Parse(e.Value.ToString());
+    }
+    protected string GetProductName(int ProductID)
+    {
+        return _receivedNoteVM.Products.Where(p => p.ProductId == ProductID).FirstOrDefault().Name;
+    }
+    protected async Task CreateReceived() {
+        isLoading = true;
+        bool success = await _receivedNoteVM.CreateReceivedNote();
+        if(success) {
+            _toastService.ShowSuccess("", "Thêm thành công");
+            await Task.Delay(3000);
+            isLoading = false;
+            _navigate.NavigateTo("admin/inventory");
+        } else {
+            _toastService.ShowError("", "Thêm thất bại");
+        }
+        isLoading = false;
+    }
+}

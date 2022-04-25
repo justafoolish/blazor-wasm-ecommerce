@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace BlazorAppEC.Shared.Services {
     public interface ICartService {
         public List<Product> Carts { get;set; }
+        public event Action OnChange;
         public int GetTotalItems();
         public int GetPrice();
         public void AddToCart(Product item);

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlazorAppEC.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using BlazorAppEC.Shared.Http;
 
 namespace BlazorAppEC.Server.Controllers
 {
@@ -43,17 +45,19 @@ namespace BlazorAppEC.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> CreateCategory(Category category)
         {
+            bool isSuccess = false;
             category.Slug = _utility.GenerateSlug(category.Title);
             Category isSlugExist = _appContext.Categories.Where(c => c.Slug == category.Slug).FirstOrDefault();
             if (isSlugExist == null)
             {
                 _appContext.Categories.Add(category);
-                await _appContext.SaveChangesAsync();
+                isSuccess = await _appContext.SaveChangesAsync() != 0;
             }
 
-            return Ok();
+            return isSuccess ? Ok(new Response() {success = true}) : BadRequest(new Response() {success = false});
         }
 
     }

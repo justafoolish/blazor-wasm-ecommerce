@@ -1,6 +1,11 @@
+@inject ICartService _cartSerice
+@inject IToastService _toastService
+@inject NavigationManager _navigate
+@implements IDisposable
+
 <div class="cart block" data-toggle="@(active ? "active" : "inactive")">
     <div class="label" @onclick="openCart">
-        <i class="ion-bag"></i> 7
+        <i class="ion-bag"></i> @_cartSerice.GetTotalItems()
     </div>
 
     <div class="overlay" @onclick="closeCart"></div>
@@ -12,9 +17,9 @@
         </div>
 
         <div class="content">
-            @for (int i = 0; i < 10; i++)
+            @foreach (var item in _cartSerice.Carts)
             {
-                <BlazorAppEC.Client.Shared.Components.Client.SideCartItem />
+                <SideCartItem product="item" deleteItem="() => deleteCartItem(item)" increase="() => increaseQty(item)" decrease="() => decreaseQty(item)"/>
             }
         </div>
 
@@ -43,12 +48,45 @@
 
 
 @code {
+    [CascadingParameter] Task<AuthenticationState> _authState {get; set;}
     private bool active = false;
-
     public void openCart() {
         active = true;
     }
     public void closeCart() {
         active = false;
+    }
+    public List<Product> cartItems { get; set; }
+    protected override void OnInitialized()
+    {
+        cartItems = _cartSerice.Carts;
+        _cartSerice.OnChange += StateHasChanged;
+    }
+    public void Dispose() {
+        _cartSerice.OnChange -= StateHasChanged;
+    }
+    protected void deleteCartItem(Product item) {
+        _cartSerice.DeleteItem(item);
+        StateHasChanged();
+    }
+    protected void increaseQty(Product item) {
+        _cartSerice.IncreaseQuantity(item);
+        StateHasChanged();
+    }
+    protected void decreaseQty(Product item) {
+        _cartSerice.DecreaseQuantity(item);
+        StateHasChanged();
+    }
+
+    protected async Task checkout() {
+        var userstate = await _authState;
+        var user = userstate.User;
+        if(!user.Identity.IsAuthenticated) {
+            _toastService.ShowInfo("","Please login");
+        } else if(_cartSerice.Carts.Count == 0) {
+            _toastService.ShowInfo("","Please order");
+        } else {
+            _navigate.NavigateTo("/checkout");
+        }
     }
 }

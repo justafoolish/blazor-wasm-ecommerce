@@ -27,6 +27,8 @@ namespace BlazorAppEC.Server.Models
         [Key]
         [Column("order_id")]
         public int OrderId { get; set; }
+        [Column("bill_total")]
+        public int? BillTotal { get; set; }
 
         [ForeignKey(nameof(DiscountId))]
         [InverseProperty("Orders")]

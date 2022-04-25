@@ -30,11 +30,11 @@ namespace BlazorAppEC.Server.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                // optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=BlazorEC;User ID=SA;Password=Tuan2903");
-            }
+//             if (!optionsBuilder.IsConfigured)
+//             {
+// // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                 // optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=BlazorEC;User ID=SA;Password=Tuan2903");
+//             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,12 +91,35 @@ namespace BlazorAppEC.Server.Models
             {
                 entity.HasKey(e => e.ReceiveNoteId)
                     .HasName("PK__received__5F76C5E57F6AE548");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.ReceivedNotes)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("fk_sup_note");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ReceivedNotes)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_rn");
             });
 
             modelBuilder.Entity<ReceivedNoteDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ReceivedNoteId, e.ProductId })
                     .HasName("PK__received__F8801DB6737CB634");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ReceivedNoteDetails)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_product_goods");
+
+                entity.HasOne(d => d.ReceivedNote)
+                    .WithMany(p => p.ReceivedNoteDetails)
+                    .HasForeignKey(d => d.ReceivedNoteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_reveived_note");
             });
 
             OnModelCreatingPartial(modelBuilder);

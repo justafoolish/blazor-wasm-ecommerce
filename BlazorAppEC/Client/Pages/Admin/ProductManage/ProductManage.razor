@@ -36,36 +36,50 @@
                             </a>
                         </td>
                         <td class="grid place-items-center">
-                            <span>
+                            <span class="text-green-500">
                                 @item.Quantity
                             </span>
                         </td>
-                        <td class="text-center">
-                            <span class="text-green-500" id="current">
-                                @item.Price
+                        <td class="grid place-items-center">
+                            <span class="" id="current">
+                                @(String.Format("{0:n0}", item.Price)) <sup>vnd</sup>
                             </span>
                         </td>
                     </tr>
                 }
-
             </tbody>
         </table>
 
-        <div class="col-sm-12 col-md-7 ml-auto mx-5">
-            <div class="dataTables_paginate paging_simple_numbers flex" id="product_table_paginate">
-                <ul class="pagination ml-auto">
-                    <li class="paginate_button page-item previous disabled" id="product_table_previous"><a href="#" aria-controls="product_table" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
-                    <li class="paginate_button page-item active"><a href="#" aria-controls="product_table" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="3" tabindex="0" class="page-link">3</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="4" tabindex="0" class="page-link">4</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="5" tabindex="0" class="page-link">5</a></li>
-                    <li class="paginate_button page-item disabled" id="product_table_ellipsis"><a href="#" aria-controls="product_table" data-dt-idx="6" tabindex="0" class="page-link">…</a></li>
-                    <li class="paginate_button page-item "><a href="#" aria-controls="product_table" data-dt-idx="7" tabindex="0" class="page-link">9</a></li>
-                    <li class="paginate_button page-item next" id="product_table_next"><a href="#" aria-controls="product_table" data-dt-idx="8" tabindex="0" class="page-link">Next</a></li>
-                </ul>
+        @if (_productManageVM.totalPage > 1)
+        {
+            <div class="col-sm-12 col-md-7 ml-auto mx-5">
+                <div class="dataTables_paginate paging_simple_numbers flex" id="product_table_paginate">
+                    <ul class="pagination ml-auto">
+                        <li class="paginate_button cursor-pointer page-item previous @(_productManageVM.currentPage == 1 ? "disabled" : "")" @onclick=@(e => changePage(_productManageVM.currentPage > 1 ? _productManageVM.currentPage-1 : 1)) id="product_table_previous">
+                            <a aria-controls="product_table" data-dt-idx="0" tabindex="0" class="h-full page-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                                </svg>
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= _productManageVM.totalPage; i++)
+                        {
+                            var btn = i;
+                            <li @onclick=@(() => changePage(btn)) class="paginate_button page-item @(_productManageVM.currentPage == btn ? "active cursor-pointer" : "cursor-pointer")">
+                                <a aria-controls="product_table" data-dt-idx="1" tabindex="0" class="page-link">@i</a>
+                            </li>
+                        }
+                        <li class="paginate_button cursor-pointer page-item next @(_productManageVM.currentPage == _productManageVM.totalPage ? "disabled" : "")" @onclick=@(e => changePage(_productManageVM.currentPage < _productManageVM.totalPage ? _productManageVM.currentPage+1 : _productManageVM.totalPage)) id="product_table_next">
+                            <a aria-controls="product_table" data-dt-idx="8" tabindex="0" class="h-full page-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </main>
 
@@ -73,5 +87,14 @@
     protected async override Task OnInitializedAsync()
     {
         await _productManageVM.GetProducts();
+    }
+    public async void changePage(int page)
+    {
+        if (_productManageVM.currentPage != page)
+        {
+            _productManageVM.currentPage = page;
+            await _productManageVM.GetProducts();
+            StateHasChanged();
+        }
     }
 }

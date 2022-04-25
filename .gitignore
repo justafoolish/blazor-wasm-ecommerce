@@ -17,3 +17,6 @@ BlazorAppEC/Server/bin
 BlazorAppEC/Server/obj
 BlazorAppEC/Shared/bin
 BlazorAppEC/Shared/obj
+
+Tailwindcss
+./Tailwindcss

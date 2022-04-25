@@ -3,6 +3,7 @@
 @inject ICartService _cartService
 @inject NavigationManager _navigate
 @inject IToastService _toastService
+@implements IDisposable
 
 <hr class="offset-md">
 <div class="container">
@@ -82,6 +83,10 @@
     protected override void OnInitialized()
     {
         cartItems = _cartService.Carts;
+        _cartService.OnChange += StateHasChanged;
+    }
+    public void Dispose() {
+        _cartService.OnChange -= StateHasChanged;
     }
     protected void deleteCartItem(Product item) {
         _cartService.DeleteItem(item);

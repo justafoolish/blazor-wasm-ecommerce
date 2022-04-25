@@ -9,6 +9,9 @@ namespace BlazorAppEC.Shared
 {
     public interface IProductManageVM
     {
+        public int itemPerPage { get; set; }
+        public int totalPage { get; set; }
+        public int currentPage { get; set; }
         public List<Product> Products { get; set; }
         public Task GetProducts();
     }

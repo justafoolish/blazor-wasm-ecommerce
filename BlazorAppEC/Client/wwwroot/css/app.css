@@ -1,4 +1,5 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿@import "./tailwind.css";
+@import "./bootstrap.datatable.css";
 
 * {
     box-sizing: border-box !important;
@@ -17,7 +18,14 @@ body {
 
 a,
 .btn-link {
-    color: #0366d6;
+    color: rgb(156 163 175/1);
+}
+
+a {
+    cursor: pointer !important;
+}
+a:hover {
+    cursor: pointer !important;
 }
 
 .btn-primary {

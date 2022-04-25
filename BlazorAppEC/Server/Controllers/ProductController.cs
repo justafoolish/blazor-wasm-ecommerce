@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using BlazorAppEC.Shared.Http;
 
 namespace BlazorAppEC.Server.Controllers {
     [ApiController]
@@ -24,17 +25,18 @@ namespace BlazorAppEC.Server.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> CreateProduct(Product product) {
             product.Slug = _utility.GenerateSlug(product.Name);
             product.Sold = 0;
             product.CreateAt = DateTime.Now;
             _appContext.Products.Add(product);
-            await _appContext.SaveChangesAsync();
-            return Ok();
+            bool isSuccess = await _appContext.SaveChangesAsync() != 0;
+            return isSuccess ? Ok(new Response() {success = true, message = "Tạo sản phẩm thành công"}) : BadRequest(new Response() {success =false, message = "Thất bại. Vui lòng thử lại"});
         }
 
         [HttpGet]
-        public async Task<List<Product>> GetListProduct(int _category = -1, int _manufacture = -1, int _page = -1, int _limit = 6) {
+        public async Task<List<Product>> GetListProduct(int _category = -1, int _manufacture = -1, int _page = -1, int _limit = -1) {
             var query = _appContext.Products.Where(p => true);
             if(_category != -1 && _category > 0) {
                 query = query.Where(p => p.CategoryId == _category);
@@ -42,7 +44,7 @@ namespace BlazorAppEC.Server.Controllers {
             if(_manufacture != -1 && _manufacture > 0) {
                 query = query.Where(p => p.ManufactureId == _manufacture);
             }
-            if(_page > 0) {
+            if(_page > 0 && _limit > 0) {
                 query = query
                     .OrderBy(p => p.Name)
                     .Skip((_page - 1) * _limit)
@@ -81,6 +83,12 @@ namespace BlazorAppEC.Server.Controllers {
             }
 
             return await record.CountAsync();
+        }
+        [HttpGet("test")]
+        public async Task<ActionResult> test() {
+            List<Product> prods = await _appContext.Products.Take(5).ToListAsync();
+
+            return Ok(new Response() {success = true, data = prods});
         }
     }
 }

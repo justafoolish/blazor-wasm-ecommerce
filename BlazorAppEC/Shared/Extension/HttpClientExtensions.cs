@@ -63,6 +63,24 @@ namespace System.Net.Http {
             var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
             return JsonSerializer.Deserialize<T>(responseBody, jsonSerializerOptions);
         }
+        public static async Task<T> PatchAsync<T>(this HttpClient httpClient,
+            string url,
+            object data,
+            string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Patch, url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token); ;
+
+            request.Content = new StringContent(JsonSerializer.Serialize(data),
+               Encoding.UTF8,
+               "application/json");
+
+            var response = await httpClient.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<T>(responseBody, jsonSerializerOptions);
+        }
 
         public static async Task<int> DeleteAsync(this HttpClient httpClient,
             string url,

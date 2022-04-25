@@ -9,6 +9,6 @@ namespace BlazorAppEC.Shared
         public Product Product { get; set; }
         public Task initCategories();
         public Task initManufactures();
-        public Task AddProduct();
+        public Task<bool> AddProduct();
     }
 }

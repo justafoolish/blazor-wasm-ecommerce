@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Net.Mime;
+using System.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace BlazorAppEC.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class OrderController : ControllerBase
     {
         private BlazorECContext _appContext;
@@ -26,21 +27,65 @@ namespace BlazorAppEC.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetListOrder()
-        {
-            var orders = await _appContext.Orders.ToListAsync();
-            
-            return Ok(new Response() {success = true, data = orders});
+        public async Task<List<Order>> GetListOrders(int _page = 0, int _limit = 6) {
+            var query = await _appContext.Orders.OrderBy(o => o.CreateAt).Skip(_page != 0 ? (_page - 1 ) * _limit : 0).Take(_limit).ToListAsync();
+            foreach(var order in query) {
+                var user = _appContext.Entry(order).Reference(o => o.User).Query().Select(u => new User {
+                    Fullname = u.Fullname
+                }).FirstOrDefault();
+                order.User = new User() {Fullname = user.Fullname};
+                order.OrderDetails = _appContext.Entry(order).Collection(o => o.OrderDetails).Query().Select(o => new OrderDetail {
+                    Quantity = o.Quantity,
+                    Price = o.Price
+                }).ToList();
+                
+            }
+            return query;
+        }
+        [HttpGet("count")]
+        public async Task<int> CountOrders() {
+            return await _appContext.Orders.CountAsync();
         }
 
         [HttpGet("{orderID}")]
-        public Order GetOrder(int orderID)
+        public async Task<List<OrderDetail>> GetOrder(int orderID)
         {
-            Order order = _appContext.Orders.FirstOrDefault(c => c.OrderId == orderID);
+            List<OrderDetail> orders = await _appContext.OrderDetails.Where(c => c.OrderId == orderID).ToListAsync();
 
-            _appContext.Entry(order).Collection("Products").Load();
+            foreach(var item in orders) {
+                var orderRef = _appContext.Entry(item).Reference(o => o.Order).Query().FirstOrDefault();
+                var productRef = _appContext.Entry(item).Reference(o => o.Product).Query().FirstOrDefault();
+                var userRef = _appContext.Entry(item.Order).Reference(o => o.User).Query().FirstOrDefault();
 
-            return order;
+                item.Product = new Product() {
+                    Name = productRef.Name,
+                    Image = productRef.Image
+                };
+                item.Order = new Order() {
+                    UserId = orderRef.UserId,
+                    CreateAt = orderRef.CreateAt,
+                    Status = orderRef.Status,
+                    User = new User() {
+                        Fullname = userRef.Fullname,
+                        Address = userRef.Address,
+                        Phone = userRef.Phone
+                    }
+                };
+                
+            }
+            return orders;
+        }
+        [HttpPatch("confirm")]
+        public async Task<ActionResult> ConfirmOrder([FromBody]int order_id) {
+
+            Order Order = await _appContext.Orders.Where(o => o.OrderId == order_id).FirstOrDefaultAsync();
+            if(Order != null) {
+                Order.Status = 1;
+            }
+
+            bool isSuccess = await _appContext.SaveChangesAsync() != 0;
+
+            return isSuccess ? Ok(new Response() {success = true}) : BadRequest(new Response() {success = false});
         }
 
         [HttpPost]

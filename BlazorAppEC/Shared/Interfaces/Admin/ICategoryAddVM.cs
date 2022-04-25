@@ -10,6 +10,6 @@ namespace BlazorAppEC.Shared
     public interface ICategoryAddVM
     {
         public Category Category {get; set;}
-        public Task<HttpResponseMessage> CreateCategory();
+        public Task<bool> CreateCategory();
     }
 }

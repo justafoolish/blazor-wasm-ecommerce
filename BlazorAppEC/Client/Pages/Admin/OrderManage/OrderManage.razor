@@ -1,4 +1,5 @@
 @page "/admin/order-manage"
+@inject IOrderVM _orderVM
 
 <BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
 <main class="px-10">
@@ -14,35 +15,87 @@
             <thead class="bg-gray-700 text-gray-50">
                 <tr class="py-2">
                     <th>Mã</th>
-                    <th>Ngày tạo</th>
-                    <th>Khách hàng</th>
                     <th>Trạng thái</th>
+                    <th>Khách hàng</th>
                     <th>Tổng tiền</th>
+                    <th>Ngày tạo</th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="py-2">
+                @foreach (var item in _orderVM.Orders)
+                {
+                    <tr class="py-2">
                     <td>
-                        <NavLink href="admin/order-manage/123123" class="text-blue-600 hover:text-blue-800">
-                            123
+                        <NavLink href=@($"admin/order-manage/{item.OrderId}") class="text-blue-600 hover:text-blue-800 text-center">
+                            @item.OrderId
                         </NavLink>
                     </td>
-                    <td class="text-center">
-                        2021-12-16
+                    <td class="text-center text-@(item.Status == 0 ? "yellow" : "green")-500">
+                        @(item.Status == 0 ? "Chưa thanh toán" : "Đã thanh toán")
                     </td>
                     <td class="text-center">
-                        <a href="<?= BASE_URL ?>/CustomerManage/ViewDetail/<?= $orders['MaKhachHang'] ?>" class="text-blue-600 hover:text-blue-800">
-                            Tuaans
+                        <a href="" class="text-blue-600 hover:text-blue-800">
+                            @item.User.Fullname
                         </a>
                     </td>
-                    <td class="text-center text-green-500">
-                        Đã thanh toán
+                    <td class="text-center">
+                        @(String.Format("{0:n0}", _orderVM.GetBillTotal(item.OrderDetails.ToList()))) 
+                        <sup>vnd</sup>
                     </td>
                     <td class="text-center">
-                        123.456<sup>đ</sup>
+                        @item.CreateAt
                     </td>
                 </tr>
+                }
+                
             </tbody>
         </table>
+
+        @if (_orderVM.totalPage > 1)
+        {
+            <div class="col-sm-12 col-md-7 ml-auto mx-5">
+                <div class="dataTables_paginate paging_simple_numbers flex" id="product_table_paginate">
+                    <ul class="pagination ml-auto">
+                        <li class="paginate_button cursor-pointer page-item previous @(_orderVM.currentPage == 1 ? "disabled" : "")" @onclick=@(e => changePage(_orderVM.currentPage > 1 ? _orderVM.currentPage-1 : 1)) id="product_table_previous">
+                            <a aria-controls="product_table" data-dt-idx="0" tabindex="0" class="h-full page-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                                </svg>
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= _orderVM.totalPage; i++)
+                        {
+                            var btn = i;
+                            <li @onclick=@(() => changePage(btn)) class="paginate_button page-item @(_orderVM.currentPage == btn ? "active cursor-pointer" : "cursor-pointer")">
+                                <a aria-controls="product_table" data-dt-idx="1" tabindex="0" class="page-link">@i</a>
+                            </li>
+                        }
+                        <li class="paginate_button cursor-pointer page-item next @(_orderVM.currentPage == _orderVM.totalPage ? "disabled" : "")" @onclick=@(e => changePage(_orderVM.currentPage < _orderVM.totalPage ? _orderVM.currentPage+1 : _orderVM.totalPage)) id="product_table_next">
+                            <a aria-controls="product_table" data-dt-idx="8" tabindex="0" class="h-full page-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
     </div>
 </main>
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await _orderVM.GetOrders();
+    }
+    public async void changePage(int page)
+    {
+        if (_orderVM.currentPage != page)
+        {
+            _orderVM.currentPage = page;
+            await _orderVM.GetOrders();
+            StateHasChanged();
+        }
+    }
+}

@@ -1,8 +1,5 @@
 ﻿@page "/"
 @page "/home"
-@using BlazorAppEC.Client.Shared.Components.Client
-@using BlazorAppEC.Client.Shared.Components
-@using BlazorAppEC.Shared
 
 @inject IHomePageVM _homePageVM
 
@@ -15,14 +12,14 @@
     <div class="row products">
         @if (_homePageVM.LatestProduct.Count() == 0)
         {
-            <BlazorAppEC.Client.Shared.Components.Loading />
+            <Loading />
         }
         else
         {
             @foreach (var product in _homePageVM.LatestProduct)
             {
                 <div class="col-sm-6 col-md-3 product flex flex-col">
-                    <BlazorAppEC.Client.Shared.Components.Client.ProductItem product="product" />
+                    <ProductItem product="product" />
                 </div>
             }
         }
@@ -36,14 +33,14 @@
     <div class="row products">
         @if (_homePageVM.BestSeller.Count() == 0)
         {
-            <BlazorAppEC.Client.Shared.Components.Loading />
+            <Loading />
         }
         else
         {
             @foreach (var product in _homePageVM.BestSeller)
             {
                 <div class="col-sm-6 col-md-3 product flex flex-col">
-                    <BlazorAppEC.Client.Shared.Components.Client.ProductItem product="product" />
+                    <ProductItem product="product" />
                 </div>
             }
         }
