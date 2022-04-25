@@ -2,7 +2,7 @@
 /.vs
 .vscode
 ./.vscode
-
+.DS_Store
 obj
 ./obj
 
