@@ -1,4 +1,5 @@
 @page "/admin/employee-manage"
+@inject IEmployeeManageVM _employeeManage
 
 <BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
 <main class="px-10">
@@ -25,25 +26,33 @@
                 </tr>
             </thead>
             <tbody>
-
-                <tr>
+                @foreach (var item in _employeeManage.Employees)
+                {
+                  <tr>
                     <td class="text-left flex items-center">
-                        Tuns
+                        @item.Fullname
                     </td>
                     <td class="text-center">
-                        Admin
+                        @item.Role
                     </td>
                     <td class="">
-                        hactun@tu.com
+                        @item.Email
                     </td>
                     <td class="text-center">
-                        0123456123
+                        @item.Phone
                     </td>
                     <td class="text-center">
-                        VN
+                        @item.Address
                     </td>
-                </tr>
+                </tr>  
+                }
             </tbody>
         </table>
     </div>
 </main>
+
+@code {
+    protected async override Task OnInitializedAsync() {
+        await _employeeManage.initEmployees();
+    }
+}

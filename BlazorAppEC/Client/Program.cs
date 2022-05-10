@@ -44,8 +44,13 @@ namespace BlazorAppEC.Client
             builder.Services.AddHttpClient<IProductManageVM, ProductManageVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient<IProductAddVM, ProductAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient<ICategoryAddVM, CategoryAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IManufactureAddVM, ManufactureAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IDiscountAddVM, DiscountAddVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient<IAddReceivedNote, AddReceivedNoteVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient<IReceivedNoteVM, ReceivedNoteVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddSingleton<IManufactureManage, ManufactureManageVM>();
+            builder.Services.AddHttpClient<IDiscountManageVM, DiscountManageVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient<IEmployeeManageVM, EmployeeManageVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddSingleton<ICategoryManageVM, CategoryManageVM>();
             builder.Services.AddHttpClient<IOrderDetailVM, OrderDetailVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddHttpClient<IOrderVM, OrderVM>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));

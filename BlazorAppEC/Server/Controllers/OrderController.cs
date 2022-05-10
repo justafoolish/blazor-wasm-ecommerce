@@ -56,6 +56,7 @@ namespace BlazorAppEC.Server.Controllers
                 var orderRef = _appContext.Entry(item).Reference(o => o.Order).Query().FirstOrDefault();
                 var productRef = _appContext.Entry(item).Reference(o => o.Product).Query().FirstOrDefault();
                 var userRef = _appContext.Entry(item.Order).Reference(o => o.User).Query().FirstOrDefault();
+                var discountRef = _appContext.Entry(item.Order).Reference(o => o.Discount).Query().FirstOrDefault();
 
                 item.Product = new Product() {
                     Name = productRef.Name,
@@ -69,8 +70,14 @@ namespace BlazorAppEC.Server.Controllers
                         Fullname = userRef.Fullname,
                         Address = userRef.Address,
                         Phone = userRef.Phone
-                    }
+                    },
+                    Discount = new Discount()
                 };
+                String code = discountRef?.Code ?? "";
+                if(code != string.Empty) {
+                    item.Order.Discount = discountRef;
+                }
+                 
                 
             }
             return orders;

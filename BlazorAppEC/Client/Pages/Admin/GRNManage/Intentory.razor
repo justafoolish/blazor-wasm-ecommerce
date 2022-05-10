@@ -1,0 +1,70 @@
+@page "/admin/inventory"
+@inject IReceivedNoteVM _receivedNoteVM
+
+<AdminNavBar />
+<main class="px-10">
+    <div class="flex justify-between py-5 mb-3">
+        <h3 class="font-semibold text-2xl">Tồn kho</h3>
+        <div class="flex space-x-3">
+            <a href="admin/inventory/add" class="flex items-center bg-gray-700 text-gray-200 text-xs px-3 py-2 hover:text-gray-100 hover:bg-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Tạo phiếu nhập
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="product_table" class="table table-borderless table-hover" width="100%" cellspacing="0">
+            <thead class="bg-gray-700 text-gray-50">
+                <tr class="grid grid-cols-11">
+                    <th class="col-span-2">Mã phiếu nhập</th>
+                    <th class="col-span-2">Nhà cung cấp</th>
+                    <th class="col-span-3">Nhân viên thực hiện</th>
+                    <th class="col-span-2">Tổng tiền</th>
+                    <th class="col-span-2">Ngày nhập</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _receivedNoteVM.ReceivedNotes)
+                {
+                    <tr class="grid grid-cols-11 text-center">
+                        <td class="col-span-2 text-blue-500">
+                            @item.ReceiveNoteId
+                        </td>
+                        <td class="col-span-2 text-teal-500">
+                            @item.Supplier.Name
+                        </td>
+                        <td class="col-span-3 text-yellow-500 text-center">
+                            @item.User.Fullname
+                        </td>
+                        <td class="col-span-2 text-left">
+                            @(String.Format("{0:n0}", _receivedNoteVM.GetBillTotal(item.ReceivedNoteDetails.ToList()))) 
+                            <sup>đ</sup>
+                        </td>
+                        <td class="col-span-2">
+                            @item.CreateAt
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await _receivedNoteVM.GetGoodReceivedNotes();
+    }
+    public async void changePage(int page)
+    {
+        if (_receivedNoteVM.currentPage != page)
+        {
+            _receivedNoteVM.currentPage = page;
+            await _receivedNoteVM.GetGoodReceivedNotes();
+            StateHasChanged();
+        }
+    }
+}

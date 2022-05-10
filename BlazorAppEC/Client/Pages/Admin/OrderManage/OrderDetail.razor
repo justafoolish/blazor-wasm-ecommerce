@@ -101,24 +101,24 @@
                     Tổng tiền
                 </div>
                 <div>
-                    @(String.Format("{0:n0}", _orderDetailVM.OrderDetail.Select(o => o.Price * o.Quantity).Sum())) <sup>vnd</sup>
+                    @(String.Format("{0:n0}", GetTotal())) <sup>vnd</sup>
                 </div>
                 <div>
-                    Giảm Giá (Mã #11213123)
+                    Giảm Giá (Mã #@_orderDetailVM.Discount.Code @_orderDetailVM.Discount.DiscountPercent%)
                 </div>
                 <div>
-                    0 <sup>vnd</sup>
+                    @(String.Format("{0:n0}", GetDiscount())) <sup>vnd</sup>
                 </div>
                 <div class="font-bold">Tổng giá trị đơn hàng</div>
                 <div>
-                    @(String.Format("{0:n0}", _orderDetailVM.OrderDetail.Select(o => o.Price * o.Quantity).Sum()))
+                    @(String.Format("{0:n0}", GetTotal() - GetDiscount()))
                     <sup>vnd</sup>
                 </div>
                 <div>Đã thanh toán</div>
                 <div>
                     @if (_orderDetailVM.Order.Status == 1)
                     {
-                        @(String.Format("{0:n0}", _orderDetailVM.OrderDetail.Select(o => o.Price * o.Quantity).Sum()))
+                        @(String.Format("{0:n0}", GetTotal() - GetDiscount()))
                     }
                     else
                     {
@@ -133,6 +133,17 @@
 @code {
     [Parameter]
     public string orderId { get; set; }
+
+    private double GetTotal () {
+        return _orderDetailVM.OrderDetail.Select(o => o.Price * o.Quantity).Sum();
+    }
+    private double GetDiscount() {
+        if(_orderDetailVM.Discount.Code != string.Empty) {
+            double discount = (double) _orderDetailVM.Discount.DiscountPercent / 100;
+            return discount * GetTotal();
+        }
+        return 0;
+    }
 
     protected async override Task OnInitializedAsync()
     {

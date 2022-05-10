@@ -10,7 +10,9 @@ namespace BlazorAppEC.Shared
     public interface ICheckoutVM
     {
         User User {get; set;}
-
+        String discountCode {get; set;}
+        Discount Discount {get; set;}
         Task Checkout();
+        Task VerifyDiscount();
     }
 }

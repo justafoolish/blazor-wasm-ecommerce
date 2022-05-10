@@ -101,7 +101,7 @@
                                     </div>
                                     <div class="col-xs-6">
                                         <p><b>$@_cartService.GetPrice()</b></p>
-                                        <p><b>$0</b></p>
+                                        <p><b>@(_checkoutVM.Discount.Code == String.Empty ? 0 : _checkoutVM.Discount.DiscountPercent)%</b></p>
                                         <p><b>$0</b></p>
                                     </div>
                                 </div>
@@ -109,25 +109,17 @@
 
                             <div class="checkboxes">
                                 <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                                    <div>
                                         Promotional Codes
-                                    </label>
+                                    </div>
                                     <hr class="offset-xs">
 
                                     <div class="input-group">
-                                        <input type="text" class="form-control input-sm" placeholder="Insert code">
+                                        <input @bind-value="@_checkoutVM.discountCode" type="text" class="form-control input-sm" placeholder="Insert code">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-info btn-sm">Apply</button>
+                                            <button class="btn btn-info btn-sm" @onclick="_checkoutVM.VerifyDiscount">Apply</button>
                                         </span>
                                     </div><!-- /input-group -->
-                                    <hr class="offset-sm">
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                                        Coupon
-                                    </label>
                                 </div>
                             </div>
                             <hr>
@@ -138,7 +130,7 @@
                                         <h3 class="no-margin">Total sum</h3>
                                     </div>
                                     <div class="col-xs-6">
-                                        <h3 class="no-margin">$@_cartService.GetPrice()</h3>
+                                        <h3 class="no-margin">$@(GetTotal())</h3>
                                     </div>
                                 </div>
                             </div>
@@ -159,6 +151,17 @@
 @code {
     [CascadingParameter] Task<AuthenticationState> _authState { get; set; }
     private bool isLoading = false;
+    private Double GetTotal() {
+        Double DiscountPercent = 1.0;
+        Double total = 0;
+        if(_checkoutVM.Discount.Code != string.Empty && _checkoutVM.Discount.DiscountPercent != 0) {
+            DiscountPercent = (double) (100 - _checkoutVM.Discount.DiscountPercent)/100;
+        }
+        total = _cartService.GetPrice();
+        total = total * (DiscountPercent);
+
+        return total;
+    }
     protected async override Task OnInitializedAsync()
     {
         var userState = await _authState;

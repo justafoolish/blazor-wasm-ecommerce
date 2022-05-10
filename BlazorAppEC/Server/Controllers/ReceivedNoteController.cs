@@ -43,7 +43,7 @@ namespace BlazorAppEC.Server.Controllers
                 foreach(var product in _appContext.Products.Where(p => productIDs.Contains(p.ProductId)).ToList()) {
                     product.Quantity += received.ReceivedNoteDetails.Where(p => p.ProductId == product.ProductId).Select(p => p.Quantity).FirstOrDefault();
                 }
-
+                await _appContext.SaveChangesAsync();
             }
 
             return isSuccess ? Ok(new Response() {success = true, message = "Thêm thành công", data = received}) : BadRequest(new Response() {success = false, message = "Thêm thất bại", data = received});

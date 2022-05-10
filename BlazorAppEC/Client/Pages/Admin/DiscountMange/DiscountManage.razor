@@ -1,4 +1,5 @@
 @page "/admin/discount-manage"
+@inject IDiscountManageVM _discountManage
 
 <BlazorAppEC.Client.Shared.Components.Admin.AdminNavBar />
 <main class="px-10">
@@ -24,31 +25,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-sm">
+                @foreach (var item in _discountManage.Discounts)
+                {
+                    <tr class="text-sm">
                     <td class="text-left">
                         <p>
                             <span class="text-green-500">Mã khuyến mãi:</span>
                             <span class="font-semibold">
-                                IAEP3ZR
+                                @item.Code
                             </span>
                         </p>
                         <p>Giảm
-                            10% cho tất cả đơn hàng
+                            @item.DiscountPercent% cho tất cả đơn hàng
                         </p>
                         <p class="font-medium italic">(Mã khuyến mãi có thể sử dụng chung với chương trình khuyến mãi)</p>
                     </td>
                     <td class="text-center">
-                        3
+                        #
                     </td>
                     <td class="text-center">
-                        2021-12-08
+                        @item.StartAt.ToString("dd/MM/yyyy")
                     </td>
                     <td class="text-center">
-                        2021-12-26
+                        @item.EndAt.ToString("dd/MM/yyyy")
                     </td>
                 </tr>
+                }
+                
 
-                <tr class="text-sm">
+                @* <tr class="text-sm">
                     <td class="text-left">
                         <p class="text-blue-500">
                             Khuyến mãi sản phẩm
@@ -66,8 +71,14 @@
                     <td class="text-center">
                         
                     </td>
-                </tr>
+                </tr> *@
             </tbody>
         </table>
     </div>
 </main>
+
+@code {
+    protected async override Task OnInitializedAsync() {
+        await _discountManage.initDiscounts();
+    }
+}

@@ -20,6 +20,9 @@ namespace BlazorAppEC.Shared
         private List<Product> Carts { get; set; } = new List<Product>();
         private List<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         private ICartService _cartService { get; }
+        public Discount Discount {get; set;} = new Discount();
+        public string discountCode { get; set; } = "";
+
         private HttpClient _httpClient;
         private ILocalStorageService _localStorage;
         private IToastService _toastService;
@@ -45,6 +48,14 @@ namespace BlazorAppEC.Shared
                     Price = item.Price,
                     Quantity = item.Quantity
                 });
+            }
+        }
+        public async Task VerifyDiscount() {
+            var checkCode = await _httpClient.GetAsync<Response>($"api/discount/{discountCode}","");
+            if(checkCode.success) {
+                Discount = Utility.jsonConvert<Discount>(checkCode.data.ToString());
+                Console.WriteLine(Discount.DiscountPercent);
+                Order.DiscountId = Discount.DiscountId;
             }
         }
         public async Task Checkout()

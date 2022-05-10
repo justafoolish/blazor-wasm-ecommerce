@@ -31,9 +31,9 @@
                             <div class="w-10">
                                 <img src="@item.Image" class="max-w-full h-auto object-center object-cover">
                             </div>
-                            <a href="" class="text-gray-700 hover:text-gray-900 hover:underline transition-all">
-                                @item.Name
-                            </a>
+                            <NavLink href=@($"admin/product-manage/update/{item.Slug}") class="text-gray-700 hover:text-gray-900 hover:underline transition-all">
+                                    @item.Name
+                            </NavLink>
                         </td>
                         <td class="grid place-items-center">
                             <span class="text-green-500">

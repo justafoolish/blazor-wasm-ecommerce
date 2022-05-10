@@ -1,0 +1,108 @@
+@page "/admin/product-manage/update/{slug?}"
+@inject NavigationManager _navigation
+@inject IProductAddVM _productAddVM
+@inject IToastService _toastService
+
+<div>
+    <header class='flex justify-end items-center py-4 sticky top-0 inset-x-0 bg-white z-10 shadow-lg px-10 space-x-3'>
+        <a class="text-xs py-2 px-5 bg-gray-500 hover:bg-gray-600 transition-all text-gray-50" href="admin/product-manage" disabled="@isLoading">Huỷ</a>
+        <button @onclick="submitForm" class="text-xs py-2 px-5 bg-blue-500 hover:bg-blue-600 transition-all text-gray-50" disabled="@isLoading">Lưu</button>
+    </header>
+    <main class="px-10 mt-5">
+        <h3 class="font-semibold text-2xl border-b pb-2">Tạo sản phẩm</h3>
+        <div class="grid grid-cols-6 mt-2 gap-4">
+            <div class="col-start-2 col-span-4 space-y-3">
+                <div>
+                    <label>Tên sản phẩm</label>
+                    <input @bind-value="_productAddVM.Product.Name" type="text" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" placeholder="Nhập tên sản phẩm" name="TenSP">
+                </div>
+                <div>
+                    <label for="">Danh mục</label>
+                    <select @onchange="@(e => _productAddVM.Product.CategoryId = Int32.Parse(e.Value.ToString()))" class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
+                        <option selected disabled>Chọn danh mục sản phẩm</option>
+                        @foreach (var item in _productAddVM.Categories)
+                        {
+                            <option value="@item.CategoryId" selected=@(item.CategoryId == _productAddVM.Product.CategoryId)>
+                                @item.Title
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label for="">Thương hiệu</label>
+                    <select @onchange="@(e => _productAddVM.Product.ManufactureId = Int32.Parse(e.Value.ToString()))" class="w-full py-2 px-3 mt-1 border focus:ring-gray-700 focus:ring-2 transition-all outline-none">
+                        <option selected disabled>Chọn thương hiệu</option>
+                        @foreach (var item in _productAddVM.Manufactures)
+                        {
+                            <option value="@item.ManufactureId" selected=@(item.ManufactureId == _productAddVM.Product.ManufactureId)>
+                                @item.Title
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label>Hình ảnh</label>
+                    <div class="mb-2 border w-full px-3 py-2 focus:ring-gray-700 focus:ring-2 transition-all ">
+                        <InputFile class="outline-none w-11/12" OnChange="@onFileChange" />
+                    </div>
+                    @if (_productAddVM.Product.Image != string.Empty)
+                    {
+                        <div class="w-40">
+                            <img src="@_productAddVM.Product.Image">
+                        </div>
+                    }
+                </div>
+                <div>
+                    <label>Giá thành</label>
+                    <input type="number" @bind-value="_productAddVM.Product.Price" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min="0" step="10000" required placeholder="Nhập giá thành" name="DonGia">
+                </div>
+                <div>
+                    <label>Só lượng</label>
+                    <input type="number" @bind-value="_productAddVM.Product.Quantity" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min="0" step="10000" required placeholder="Nhập số lượng" name="DonGia">
+                </div>
+                <div>
+                    <label>Mô tả</label>
+                    <textarea @oninput=@(e => _productAddVM.Product.Description = e.Value.ToString()) rows="5" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" name="MoTa">@_productAddVM.Product.Description</textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@code {
+    private bool isLoading = false;
+    [Parameter] public string slug { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await _productAddVM.initCategories();
+        await _productAddVM.initManufactures();
+        await _productAddVM.GetProductUpdate(slug);
+    }
+
+    public async Task onFileChange(InputFileChangeEventArgs fileEv)
+    {
+        var file = fileEv.File;
+
+        var buffer = new byte[file.Size];
+
+        await file.OpenReadStream().ReadAsync(buffer);
+
+        _productAddVM.Product.Image = $"data:image/png;base64,{Convert.ToBase64String(buffer)}";
+
+        System.Console.WriteLine(_productAddVM.Product.Image);
+    }
+
+    public async Task submitForm() {
+        isLoading = true;
+        bool response = await _productAddVM.UpdateProduct();
+        if(response) {
+            _toastService.ShowSuccess("","Cập nhật thành công");
+            await Task.Delay(3000);
+            _navigation.NavigateTo("admin/product-manage");
+        } else {
+            _toastService.ShowError("", "Cập nhật thất bại. Vui lòng thử lại");
+        }
+        isLoading = false;
+    }
+}

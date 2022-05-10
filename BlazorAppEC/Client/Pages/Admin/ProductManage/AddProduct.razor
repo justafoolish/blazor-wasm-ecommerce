@@ -45,11 +45,12 @@
                     <div class="mb-2 border w-full px-3 py-2 focus:ring-gray-700 focus:ring-2 transition-all ">
                         <InputFile class="outline-none w-11/12" OnChange="@onFileChange" />
                     </div>
-                    @* <div class="@(@_productAddVM.Product.Image != "" ? "block" : "hidden")">
-                        <div class="h-16">
-                        <img src="@_productAddVM.Product.Image" alt="HP Chromebook 11" class="max-w-sm max-h-80 object-contain " />
+                    @if (_productAddVM.Product.Image != string.Empty)
+                    {
+                        <div class="w-40">
+                            <img src="@_productAddVM.Product.Image">
                         </div>
-                        </div> *@
+                    }
                 </div>
                 <div>
                     <label>Giá thành</label>
@@ -60,7 +61,7 @@
                     <input type="number" @bind-value="_productAddVM.Product.Quantity" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" min="0" step="10000" required placeholder="Nhập số lượng" name="DonGia">
                 </div>
                 <div>
-                    <label>Miêu tả</label>
+                    <label>Mô tả</label>
                     <textarea @oninput=@(e => _productAddVM.Product.Description = e.Value.ToString()) rows="5" class="border w-full px-3 py-2 mt-1 focus:ring-gray-700 focus:ring-2 transition-all outline-none" name="MoTa"></textarea>
                 </div>
             </div>
