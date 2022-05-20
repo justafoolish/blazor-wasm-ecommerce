@@ -30,6 +30,7 @@ namespace BlazorAppEC.Server.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> CreateProduct(Product product)
         {
+            Console.Write(product.Description);
             product.Slug = _utility.GenerateSlug(product.Name);
             product.Sold = 0;
             product.CreateAt = DateTime.Now;
@@ -118,6 +119,10 @@ namespace BlazorAppEC.Server.Controllers
                     product.ManufactureId = _prod.ManufactureId;
                 if (product.CategoryId != _prod.CategoryId)
                     product.CategoryId = _prod.CategoryId;
+                if (product.Description != _prod.Description) {
+                    product.Description = _prod.Description;
+                    Console.Write(_prod.Description);
+                }
             }
             bool isSuccess = await _appContext.SaveChangesAsync() != 0;
 

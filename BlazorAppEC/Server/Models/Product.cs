@@ -23,7 +23,7 @@ namespace BlazorAppEC.Server.Models
         public string Name { get; set; }
         [Column("quantity")]
         public int Quantity { get; set; }
-        [Column("description", TypeName = "text")]
+        [Column("description")]
         public string Description { get; set; }
         [Column("slug")]
         [StringLength(255)]
