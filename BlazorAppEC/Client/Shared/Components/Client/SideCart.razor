@@ -1,11 +1,11 @@
-@inject ICartService _cartSerice
+@inject ICartService _cartService
 @inject IToastService _toastService
 @inject NavigationManager _navigate
 @implements IDisposable
 
 <div class="cart block" data-toggle="@(active ? "active" : "inactive")">
     <div class="label" @onclick="openCart">
-        <i class="ion-bag"></i> @_cartSerice.GetTotalItems()
+        <i class="ion-bag"></i> @_cartService.GetTotalItems()
     </div>
 
     <div class="overlay" @onclick="closeCart"></div>
@@ -13,33 +13,29 @@
     <div class="window">
         <div class="title">
             <button type="button" class="close" @onclick="closeCart"><i class="ion-android-close"></i></button>
-            <h1 class="h3 info">Shopping cart</h1>
+            <h1 class="h3 info">Giỏ hàng</h1>
         </div>
 
         <div class="content">
-            @foreach (var item in _cartSerice.Carts)
+            @foreach (var item in _cartService.Carts)
             {
-                <SideCartItem product="item" deleteItem="() => deleteCartItem(item)" increase="() => increaseQty(item)" decrease="() => decreaseQty(item)"/>
+                <SideCartItem product="item" deleteItem="() => deleteCartItem(item)" increase="() => increaseQty(item)" decrease="() => decreaseQty(item)" />
             }
         </div>
 
         <div class="checkout container-fluid">
             <div class="row">
                 <div class="col-xs-3 col-sm-2">
-                    <div>
-                        <p>Subtotal:</p>
-                        <h3 class="h4">Total:</h3>
-                    </div>
+                    <h3 class="h5">Tổng tiền:</h3>
                 </div>
                 <div class="col-xs-3 col-sm-4">
-                    <div class="total">
-                        <p>$1 200</p>
-                        <h3 class="h4">$1 200</h3>
-                    </div>
+                    <h3 class="h5 no-wrap">
+                        @(String.Format("{0:n0}", _cartService.GetPrice())) <sup>vnd</sup>
+                    </h3>
                 </div>
 
                 <div class="col-xs-6 col-sm-6">
-                    <NavLink class="btn btn-primary" href="checkout" @onclick="closeCart"> Checkout order </NavLink>
+                    <NavLink class="btn btn-primary" href="checkout" @onclick="closeCart"> Thanh toán </NavLink>
                 </div>
             </div>
         </div>
@@ -48,44 +44,56 @@
 
 
 @code {
-    [CascadingParameter] Task<AuthenticationState> _authState {get; set;}
+    [CascadingParameter] Task<AuthenticationState> _authState { get; set; }
     private bool active = false;
-    public void openCart() {
+    public void openCart()
+    {
         active = true;
     }
-    public void closeCart() {
+    public void closeCart()
+    {
         active = false;
     }
     public List<Product> cartItems { get; set; }
     protected override void OnInitialized()
     {
-        cartItems = _cartSerice.Carts;
-        _cartSerice.OnChange += StateHasChanged;
+        cartItems = _cartService.Carts;
+        _cartService.OnChange += StateHasChanged;
     }
-    public void Dispose() {
-        _cartSerice.OnChange -= StateHasChanged;
+    public void Dispose()
+    {
+        _cartService.OnChange -= StateHasChanged;
     }
-    protected void deleteCartItem(Product item) {
-        _cartSerice.DeleteItem(item);
+    protected void deleteCartItem(Product item)
+    {
+        _cartService.DeleteItem(item);
         StateHasChanged();
     }
-    protected void increaseQty(Product item) {
-        _cartSerice.IncreaseQuantity(item);
+    protected void increaseQty(Product item)
+    {
+        _cartService.IncreaseQuantity(item);
         StateHasChanged();
     }
-    protected void decreaseQty(Product item) {
-        _cartSerice.DecreaseQuantity(item);
+    protected void decreaseQty(Product item)
+    {
+        _cartService.DecreaseQuantity(item);
         StateHasChanged();
     }
 
-    protected async Task checkout() {
+    protected async Task checkout()
+    {
         var userstate = await _authState;
         var user = userstate.User;
-        if(!user.Identity.IsAuthenticated) {
-            _toastService.ShowInfo("","Please login");
-        } else if(_cartSerice.Carts.Count == 0) {
-            _toastService.ShowInfo("","Please order");
-        } else {
+        if (!user.Identity.IsAuthenticated)
+        {
+            _toastService.ShowInfo("", "Please login");
+        }
+        else if (_cartService.Carts.Count == 0)
+        {
+            _toastService.ShowInfo("", "Please order");
+        }
+        else
+        {
             _navigate.NavigateTo("/checkout");
         }
     }

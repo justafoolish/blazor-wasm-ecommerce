@@ -28,16 +28,19 @@
                 <hr class="offset-md visible-sm">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h2 class="no-margin">Summary</h2>
+                        <h2 class="no-margin">Tổng quát</h2>
                         <hr class="offset-md">
 
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <p>Subtotal (@_cartService.GetTotalItems() items)</p>
+                                    <p>Tổng (@_cartService.GetTotalItems() sản phẩm)</p>
                                 </div>
                                 <div class="col-xs-6">
-                                    <p><b>$@_cartService.GetPrice()</b></p>
+                                    <p><b>
+                                        @(String.Format("{0:n0}", _cartService.GetPrice())) <sup>vnd</sup>
+
+                                    </b></p>
                                 </div>
                             </div>
                         </div>
@@ -46,19 +49,21 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <h3 class="no-margin">Total sum</h3>
+                                    <h3 class="no-margin">Tổng tiền</h3>
                                 </div>
                                 <div class="col-xs-6">
-                                    <h3 class="no-margin">$@_cartService.GetPrice()</h3>
+                                    <h3 class="no-margin">
+                                        @(String.Format("{0:n0}", _cartService.GetPrice())) <sup>vnd</sup>
+                                    </h3>
                                 </div>
                             </div>
                         </div>
                         <hr class="offset-md">
 
-                        <a @onclick="checkout" class="btn btn-primary btn-lg justify"><i class="ion-android-checkbox-outline"></i>&nbsp;&nbsp; Checkout order</a>
+                        <a @onclick="checkout" class="btn btn-primary btn-lg justify"><i class="ion-android-checkbox-outline"></i>&nbsp;&nbsp; Thanh toán</a>
                         <hr class="offset-md">
 
-                        <p>Pay your order in the most convenient way</p>
+                        <p>Thanh toán một cách tiện lợi nhất</p>
                         <div class="payment-icons">
                             <img src="img/payments/icon-paypal.svg" alt="paypal">
                             <img src="img/payments/icon-visa.svg" alt="visa">
@@ -74,7 +79,7 @@
     else
     {
         <div class="grid place-items-center w-full h-32">
-            <NavLink href="/category" class="cursor-pointer">Continue Shopping</NavLink>
+            <NavLink href="/category" class="cursor-pointer">Tiếp tục mua hàng</NavLink>
         </div>
 
     }

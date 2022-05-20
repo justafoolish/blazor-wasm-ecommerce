@@ -1,12 +1,13 @@
 @page "/product/{slug?}"
 @inject IHomePageVM _homePageVM
 @inject ICartService _cartService
+@inject NavigationManager _navigate
 
 <hr class="offset-lg">
 <div class="product">
   <div class="container">
     <div class="row">
-      <div class="col-sm-7 col-md-7">
+      <div class="col-sm-6 col-md-6">
         <div class="carousel product" data-count="5" data-current="1">
           <div class="items">
             <div class="item active" data-marker="1">
@@ -16,149 +17,26 @@
 
         </div>
       </div>
-      <div class="col-sm-5 col-md-5">
-        @* <img src="@_homePageVM.Product.Image" alt="HP" class="brand hidden-xs" /> *@
+      <div class="col-sm-6 col-md-6">
 
         <h1>@_homePageVM.Product.Name</h1>
-
-        <p> &middot; Chrome OS™</p>
-        <p> &middot; Intel® Celeron® processor</p>
-        <p> &middot; Intel HD Graphics</p>
-
-        <p class="price">$@_homePageVM.Product.Price</p>
-        @* <p class="price through">$249.99</p> *@
-        <br><br>
-
-        <button class="btn btn-primary btn-rounded" @onclick=@(() => _cartService.AddToCart(_homePageVM.Product))> <i class="ion-bag"></i> Add to cart</button>
-      </div>
-    </div>
-    <br><br><br>
-
-
-    <div class="row">
-      <div class="col-sm-7">
-        <h1>HP Chromebook 11</h1>
-        <br>
-
-        <p>
-          The stylish HP Chromebook provides a speedy connection to your protected online content and automatically updated apps, all within an ultra-thin full-sized notebook, providing a comfortable gateway to surf, socialize and play.
+        <p class="whitespace-pre-line	">
+          @_homePageVM.Product.Description
         </p>
-        <br>
-
-        <h2>Product specifications</h2>
-        <br>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Operating system</label> </div>
-          <div class="col-sm-6">
-            <p>Chrome OS™</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Processor</label> </div>
-          <div class="col-sm-6">
-            <p>Intel® Celeron® N2840 with Intel® HD Graphics (2.16 GHz, up to 2.58 GHz, 1 MB cache, 2 cores)</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Processor technology</label> </div>
-          <div class="col-sm-6">
-            <p>Intel Turbo Boost Technology</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Graphics</label> </div>
-          <div class="col-sm-6">
-            <p>Intel HD Graphics</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Memory</label> </div>
-          <div class="col-sm-6">
-            <p>2 GB DDR3L SDRAM (onboard)</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Hard drive</label> </div>
-          <div class="col-sm-6">
-            <p>16 GB eMMC</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Wireless</label> </div>
-          <div class="col-sm-6">
-            <p>802.11ac (2x2) and Bluetooth® 4.0 combo</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Power supply</label> </div>
-          <div class="col-sm-6">
-            <p>45 W AC power adapter</p>
-          </div>
-        </div>
-
-        <div class="row specification">
-          <div class="col-sm-6"> <label>Battery</label> </div>
-          <div class="col-sm-6">
-            <p>3-cell, 36 Wh Li-ion</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-5">
-        <div class="comments">
-          <h2 class="h3">What do you think? (#3)</h2>
-          <br>
-
-
-          <div class="wrapper">
-            <div class="content">
-              <h3>Anne Hathaway</h3>
-              <label>2 years ago</label>
-              <p>
-                Apple Music brings iTunes music streaming to the UK. But is it worth paying for? In our Apple Music review, we examine the service's features, UK pricing, audio quality and music library
-              </p>
-
-
-              <h3>Chris Hemsworth</h3>
-              <label>Today</label>
-              <p>
-                Samsung's Galaxy S7 smartphone is getting serious hype. Here's what it does better than Apple's iPhone 6s.
-              </p>
-
-
-              <h3>Anne Hathaway</h3>
-              <label>2 years ago</label>
-              <p>
-                Apple Music brings iTunes music streaming to the UK. But is it worth paying for? In our Apple Music review, we examine the service's features, UK pricing, audio quality and music library
-              </p>
-            </div>
-          </div>
-          <br>
-
-          <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#Modal-Comment"> <i class="ion-chatbox-working"></i> Add comment </button>
-        </div>
+        <br><br>
+        <p class="price">
+          @(String.Format("{0:n0}", _homePageVM.Product.Price)) <sup>vnd</sup>
+        </p>
         <br><br>
 
-        <div class="talk">
-          <h2 class="h3">Do you have any questions?</h2>
-          <p>Online chat with our manager</p>
-
-          <button class="btn btn-default btn-sm"> <i class="ion-android-contact"></i> Lat's talk </button>
-        </div>
+        <button class="btn btn-primary btn-rounded" @onclick=@(() => _cartService.AddToCart(_homePageVM.Product))> <i class="ion-bag"></i> Thêm vào giỏ</button>
       </div>
     </div>
+    <br>
+
   </div>
 </div>
 <br />
-<br />
-
 
 @code {
   [Parameter]
@@ -167,6 +45,10 @@
   protected async override Task OnInitializedAsync()
   {
     await _homePageVM.GetProductDetail(slug);
+    if(_homePageVM.Product.Name == string.Empty) {
+      _navigate.NavigateTo("/category");
+    }
+    Console.Write(_homePageVM.Product.Description);
   }
 
 }

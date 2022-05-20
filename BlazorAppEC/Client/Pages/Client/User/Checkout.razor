@@ -7,7 +7,7 @@
 <AuthorizeView>
     <NotAuthorized>
         @if(true) {
-        _navigate.NavigateTo("/home");
+        _navigate.NavigateTo("/login");
         }
     </NotAuthorized>
     <Authorized>
@@ -18,7 +18,7 @@
         
         <div class="box">
             <div class="container">
-                <h1>Checkout order</h1>
+                <h1>Thanh toán hoá đơn</h1>
             </div>
         </div>
         <hr class="offset-md">
@@ -30,7 +30,7 @@
                         <div class="panel-body">
                             <div class="checkout">
                                 <div class="addresses box-select">
-                                    <h2> 1. Delevery address</h2>
+                                    <h2> 1. Địa chỉ giao hàng</h2>
                                     <hr class="offset-sm">
 
                                     <address class="box-default sm-padding" data-style="selected">
@@ -51,7 +51,7 @@
                                     <hr>
                                 </div>
                                 <div class="payment box-select">
-                                    <h2> 2. Payment </h2>
+                                    <h2> 2. Phương thức thanh toán </h2>
                                     <hr class="offset-sm">
 
                                     <div class="row">
@@ -59,7 +59,7 @@
                                             <div class="box-default sm-padding" data-style="selected">
                                                 <hr class="offset-sm">
                                                 <img src="img/payments/cash-on-delivery.png" title="paypal" alt="paypal" class="w-20 h-auto object-contain"/>
-                                                <span>0% Service fee</span>
+                                                <span>miễn phí dịch vụ</span>
                                                 <div class="check">
                                                     <i class="ion-checkmark-round"></i>
                                                 </div>
@@ -70,7 +70,7 @@
                                             <div class="box-default sm-padding">
                                                 <hr class="offset-sm">
                                                 <img src="img/payments/credit-card.png" class="w-20 h-auto object-contain" title="stripe" alt="stripe" />
-                                                <span>1% Service fee</span>
+                                                <span>1% phí dịch vụ</span>
                                                 <div class="check">
                                                     <i class="ion-checkmark-round"></i>
                                                 </div>
@@ -89,20 +89,22 @@
                     <hr class="offset-sm visible-sm">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h2 class="no-margin">Summary</h2>
+                            <h2 class="no-margin">Tổng quát</h2>
                             <hr class="offset-md">
 
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <p>Subtotal (@_cartService.GetTotalItems() items)</p>
-                                        <p>Discount</p>
-                                        <p>Delivery</p>
+                                        <p>Tổng @_cartService.GetTotalItems() sản phẩm</p>
+                                        <p>Giảm giá</p>
+                                        <p>Phí giao hàng</p>
                                     </div>
                                     <div class="col-xs-6">
-                                        <p><b>$@_cartService.GetPrice()</b></p>
+                                        <p><b>
+                                            @(String.Format("{0:n0}", _cartService.GetPrice())) <sup>vnd</sup>
+                                        </b></p>
                                         <p><b>@(_checkoutVM.Discount.Code == String.Empty ? 0 : _checkoutVM.Discount.DiscountPercent)%</b></p>
-                                        <p><b>$0</b></p>
+                                        <p><b>0</b></p>
                                     </div>
                                 </div>
                             </div>
@@ -110,14 +112,14 @@
                             <div class="checkboxes">
                                 <div class="radio">
                                     <div>
-                                        Promotional Codes
+                                        Mã khuyến mãi
                                     </div>
                                     <hr class="offset-xs">
 
                                     <div class="input-group">
-                                        <input @bind-value="@_checkoutVM.discountCode" type="text" class="form-control input-sm" placeholder="Insert code">
+                                        <input @bind-value="@_checkoutVM.discountCode" type="text" class="form-control input-sm" placeholder="Nhập code">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-info btn-sm" @onclick="_checkoutVM.VerifyDiscount">Apply</button>
+                                            <button class="btn btn-info btn-sm" @onclick="_checkoutVM.VerifyDiscount">Kiểm tra</button>
                                         </span>
                                     </div><!-- /input-group -->
                                 </div>
@@ -127,16 +129,18 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <h3 class="no-margin">Total sum</h3>
+                                        <h3 class="no-margin">Tổng tiền</h3>
                                     </div>
                                     <div class="col-xs-6">
-                                        <h3 class="no-margin">$@(GetTotal())</h3>
+                                        <h3 class="no-margin">
+                                            @(String.Format("{0:n0}", GetTotal())) <sup>vnd</sup>
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
                             <hr class="offset-md">
 
-                            <button class="btn btn-primary btn-lg justify" @onclick="PlaceOrder" disabled=@(isLoading)><i class="ion-compose"></i>&nbsp;&nbsp; Confirm order</button>
+                            <button class="btn btn-primary btn-lg justify" @onclick="PlaceOrder" disabled=@(isLoading)><i class="ion-compose"></i>&nbsp;&nbsp; Xác nhận đơn hàng</button>
                         </div>
                     </div>
                 </div>
@@ -169,7 +173,7 @@
         
         if (!user.Identity.IsAuthenticated || _cartService.Carts.Count == 0)
         {
-            _navigate.NavigateTo("/home");
+            _navigate.NavigateTo("/login");
         } else {
             IEnumerable<Claim> _claim = Enumerable.Empty<Claim>();
             _claim = user.Claims;

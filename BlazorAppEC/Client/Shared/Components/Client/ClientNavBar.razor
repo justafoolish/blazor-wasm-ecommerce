@@ -14,33 +14,33 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>
-                    <NavLink href="/home" class="client-nav">Home</NavLink>
+                    <NavLink href="/home" class="client-nav">Trang chủ</NavLink>
                 </li>
                 <li>
-                    <NavLink href="category">Category</NavLink>
+                    <NavLink href="category">Danh sách sản phẩm</NavLink>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <NavLink href="cart" class="flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
                         </svg>
-                        <span>Cart</span>
+                        <span>Giỏ hàng</span>
                     </NavLink>
                 </li>
                 <AuthorizeView>
                     <NotAuthorized>
                         <li>
                             <NavLink href="login" class="flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" viewBox="0 0 20 20" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                                 </svg>
-                                <span>Login</span>
+                                <span>Đăng nhập</span>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink href="signup"> Sign Up</NavLink>
+                            <NavLink href="signup">Đăng ký</NavLink>
                         </li>
                     </NotAuthorized>
                     <Authorized>
@@ -50,7 +50,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
                                 <span>
-                                    Logout
+                                    Đăng xuất
                                 </span>
                             </a>
                         </li>

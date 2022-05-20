@@ -6,7 +6,9 @@
         <div>
             <h2 class="h4 media-heading">@product.Name</h2>
         <label></label>
-        <p class="price">@product.Price</p>
+        <p class="price">
+            @(String.Format("{0:n0}", product.Price)) <sup>vnd</sup>
+        </p>
         </div>
     </div>
     <div class="controls">
@@ -20,7 +22,7 @@
             </span>
         </div><!-- /input-group -->
 
-        <a @onclick="() => deleteItem?.Invoke()" class="cursor-pointer"> <i class="ion-trash-b"></i> Remove </a>
+        <a @onclick="() => deleteItem?.Invoke()" class="cursor-pointer"> <i class="ion-trash-b"></i> Xoá </a>
     </div>
 </div>
 

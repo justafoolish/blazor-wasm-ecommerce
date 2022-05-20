@@ -9,7 +9,7 @@
         <div class="col-sm-3 filter">
             <div class="item">
                 <div class="title flex justify-between">
-                    <h1 class="h4">Type</h1>
+                    <h1 class="h4">Danh mục</h1>
                     <button @onclick="_catalogVM.resetCat" data-action="clear"> <i class="ion-ios-trash-outline"></i> Clear</button>
                     <a href="#clear" data-action="open" class="down"> <i class="ion-android-arrow-dropdown"></i> Open</a>
                 </div>
@@ -17,7 +17,7 @@
                 <div class="controls">
                     <div class="checkbox-group" data-status=@(_catalogVM.selectedCategory == -1 ? "active" : "inactive")>
                         <div class="checkbox"><i class="ion-android-done"></i></div>
-                        <label class="label" for="cat">All</label>
+                        <label class="label" for="cat">Tất cả</label>
                         <input id="cat" name="category" type="radio" value="-1" @onchange="catChange" checked=@(_catalogVM.selectedCategory == -1) />
                     </div>
                     @foreach (var item in _catalogVM.Categories)
@@ -36,14 +36,14 @@
 
             <div class="item">
                 <div class="title flex justify-between">
-                    <h1 class="h4">Manufacturer</h1>
+                    <h1 class="h4">Thương hiệu</h1>
                     <button @onclick="_catalogVM.resetMan" data-action="clear"> <i class="ion-ios-trash-outline"></i> Clear</button>
                 </div>
 
                 <div class="controls block">
                     <div class="checkbox-group" data-status=@(_catalogVM.selectedManufacture == -1 ? "active" : "inactive")>
                         <div class="checkbox"><i class="ion-android-done"></i></div>
-                        <label class="label" for="man">All</label>
+                        <label class="label" for="man">Tất cả</label>
                         <input id="man" name="man" type="radio" value="-1" @onchange="manChange" checked=@(_catalogVM.selectedManufacture == -1) />
                     </div>
                     @foreach (var item in _catalogVM.Manufactures)

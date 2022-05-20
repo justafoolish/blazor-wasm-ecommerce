@@ -9,26 +9,26 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 md-padding">
-      <h1 class="align-center text-6xl mt-4 mb-2">New Customer</h1>
+      <h1 class="align-center text-6xl mt-4 mb-2">Đăng ký thành viên mới</h1>
       <br>
 
       <form class="join" @onsubmit="register">
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-12">
-              <input type="text" name="name" @bind-value="_registerVM.user.Fullname" placeholder="First Name" class="form-control" /><br>
+              <input type="text" name="name" @bind-value="_registerVM.user.Fullname" placeholder="Họ tên" class="form-control" /><br>
             </div>
             <div class="col-sm-12">
               <input type="email" name="email" @bind-value="_registerVM.user.Email" placeholder="E-mail" class="form-control" /><br>
             </div>
             <div class="col-sm-12">
-              <input type="text" name="phone" @bind-value="_registerVM.user.Phone" placeholder="Phone" class="form-control" /><br>
+              <input type="text" name="phone" @bind-value="_registerVM.user.Phone" placeholder="Số điện thoại" class="form-control" /><br>
             </div>
             <div class="col-sm-12">
-              <input type="text" name="address" @bind-value="_registerVM.user.Address" placeholder="Address" class="form-control" /><br>
+              <input type="text" name="address" @bind-value="_registerVM.user.Address" placeholder="Địa chỉ" class="form-control" /><br>
             </div>
             <div class="col-sm-12">
-              <input type="password" name="password" @bind-value="_registerVM.user.Password" placeholder="Password" class="form-control" /><br>
+              <input type="password" name="password" @bind-value="_registerVM.user.Password" placeholder="Mật khẩu" class="form-control" /><br>
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@
               <path fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd" />
             </svg>
           }
-          Signup </button>
+          Đăng ký </button>
       </form>
 
       <br class="hidden-sm hidden-md hidden-lg">

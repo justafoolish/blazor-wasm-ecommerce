@@ -6,9 +6,7 @@
 <ClientHeader />
 
 <div class="container">
-    <h2 class="text-5xl mt-4">NEW PRODUCTS</h2>
-    <hr class="offset-md">
-
+    <h2 class="text-5xl mt-4">Sản phẩm mới</h2>
     <div class="row products">
         @if (_homePageVM.LatestProduct.Count() == 0)
         {
@@ -27,9 +25,7 @@
 </div>
 
 <div class="container">
-    <h2 class="text-5xl mt-5">RECOMMENDATION FOR YOU</h2>
-    <hr class="offset-md">
-
+    <h2 class="text-5xl mt-5">Có thể bạn sẽ thích</h2>
     <div class="row products">
         @if (_homePageVM.BestSeller.Count() == 0)
         {

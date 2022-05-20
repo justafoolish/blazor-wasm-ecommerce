@@ -12,8 +12,8 @@
     <p class="price">@(String.Format("{0:n0}", product.Price)) <sup>vnd</sup></p>
     <label></label>
 
-    <NavLink href="@($"product/{product.Slug}")" class="btn btn-link"> Details</NavLink>
-    <button class="btn btn-primary btn-rounded btn-sm" @onclick="() => _cartService.AddToCart(product)"> <i class="ion-bag"></i> Add to cart</button>
+    @* <NavLink href="@($"product/{product.Slug}")" class="btn btn-link"> Details</NavLink> *@
+    <button class="btn btn-primary btn-rounded btn-sm" @onclick="() => _cartService.AddToCart(product)"> <i class="ion-bag"></i> Thêm vào giỏ</button>
 </div>
 
 
